@@ -33,11 +33,7 @@
             overflow: hidden; /* HTMLレベルでスクロール禁止 */
         }
         body {
-            /* フォント優先順位:
-               1. UD デジタル 教科書体 (Windows 10/11, Chromebook標準)
-               2. BIZ UDPGothic (Google Fonts - UDゴシック)
-               3. Klee One (Google Fonts - 教科書体風)
-            */
+            /* フォント優先順位 */
             font-family: 'UD Digi Kyokasho N-R', 'UD Digi Kyokasho', 'BIZ UDPGothic', 'Klee One', 'YuMincho', serif;
             background-color: #fffbeb; /* yellow-50 */
             /* 画面固定設定（モバイル対応） */
@@ -47,12 +43,30 @@
             height: 100dvh; /* ダイナミックビューポート対応 */
             overscroll-behavior: none;
             touch-action: none;
+            /* テキスト選択無効化（全体） */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
         }
         #root {
             height: 100%;
             width: 100%;
             overflow: hidden;
+            /* アプリ全体を中央寄せするためのフレックスコンテナ */
+            display: flex;
+            justify-content: center;
+            background-color: #f7fee7;
         }
+        
+        /* 画像や要素のドラッグ禁止 */
+        img, div, span, button {
+            -webkit-user-drag: none;
+            -khtml-user-drag: none;
+            -moz-user-drag: none;
+            -o-user-drag: none;
+        }
+
         /* ルビのスタイル調整 */
         ruby {
             ruby-position: over;
@@ -83,16 +97,10 @@
             background-color: rgba(156, 163, 175, 0.5);
             border-radius: 20px;
         }
-        /* テキスト選択無効化 */
-        .select-none {
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        }
     </style>
 </head>
-<body>
+<!-- コピー防止措置: 右クリック、コピー、カット、ペーストを無効化 -->
+<body oncontextmenu="return false;" oncopy="return false;" oncut="return false;" onpaste="return false;">
     <div id="root"></div>
 
     <!-- アプリのソースコードをテキストとして保持 -->
@@ -410,12 +418,12 @@
                 );
             };
 
-            // スタート画面 (復元版)
+            // スタート画面
             if (gameState === 'start') {
                 const progressPercent = Math.round((solvedIdioms.length / IDIOM_DATABASE.length) * 100);
                 
                 return (
-                    <div className="h-full w-full bg-yellow-50 text-stone-800 flex items-center justify-center p-2 select-none overflow-hidden">
+                    <div className="h-full w-full flex items-center justify-center p-2 select-none overflow-hidden max-w-6xl mx-auto shadow-2xl bg-yellow-50">
                         <div className="bg-white w-full max-w-md rounded-3xl shadow-xl overflow-hidden border-4 border-orange-200 flex flex-col h-full max-h-[90vh]">
                             {/* ヘッダーエリア */}
                             <div className="bg-orange-400 p-4 text-center relative overflow-hidden shrink-0">
@@ -500,7 +508,7 @@
 
             if (gameState === 'all_clear') {
                 return (
-                    <div className="h-full w-full bg-yellow-50 flex items-center justify-center p-4">
+                    <div className="h-full w-full flex items-center justify-center p-4 max-w-6xl mx-auto shadow-2xl bg-yellow-50">
                         <div className="bg-white max-w-md w-full rounded-3xl shadow-xl border-4 border-orange-200 p-8 text-center animate-bounce-in">
                             <Trophy className="w-20 h-20 text-yellow-500 mx-auto mb-4" />
                             <h2 className="text-3xl font-bold text-orange-600 mb-4">全問クリア！</h2>
@@ -512,76 +520,88 @@
             }
 
             return (
-                <div className="h-full w-full flex flex-col md:flex-row bg-yellow-50 overflow-hidden" ref={containerRef}>
-                    {/* カードプール (PC:左, SP:下) */}
-                    <div className="md:w-1/3 h-[30%] md:h-full bg-orange-100 border-t-4 md:border-t-0 md:border-r-4 border-orange-200 flex flex-col order-2 md:order-1 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] z-20">
-                        <div className="p-2 bg-orange-200 text-orange-800 font-bold flex justify-between items-center shadow-sm">
-                            <span className="flex items-center gap-2"><Star className="fill-orange-500 text-orange-500" size={18}/> 漢字カード</span>
-                            <span className="text-xs bg-white px-2 py-0.5 rounded-full text-orange-600">あと {cards.filter(c => !c.currentSlotId).length} 枚</span>
+                <div className="h-full w-full flex flex-col bg-yellow-50 overflow-hidden max-w-6xl mx-auto shadow-2xl" ref={containerRef}>
+                    {/* 共通ヘッダー (PC/SP両方で最上部に表示) */}
+                    <header className="bg-white shadow-sm px-4 py-2 flex justify-between items-center border-b-2 border-orange-100 z-30 shrink-0">
+                        <button onClick={() => setGameState('start')} className="text-orange-600 flex items-center gap-1 text-sm font-bold bg-orange-100 px-3 py-1 rounded-full"><Home size={16}/> トップ</button>
+                        <div className="text-orange-800 font-bold text-sm">のこり <span className="text-xl text-orange-500">{IDIOM_DATABASE.length - solvedIdioms.length}</span> 問</div>
+                        <div className="w-20 flex justify-end">
+                            {isAllComplete && (
+                                <button onClick={handleRoundComplete} className="bg-green-500 text-white text-sm font-bold py-1 px-3 rounded-full shadow-md flex items-center gap-1 animate-bounce">
+                                    次へ <ArrowRight size={16}/>
+                                </button>
+                            )}
                         </div>
-                        <div className="flex-1 p-2 overflow-y-auto">
-                            <div className="grid grid-cols-4 md:grid-cols-2 lg:grid-cols-3 gap-2">
-                                {cards.map(card => {
-                                    const isPlaced = card.currentSlotId !== null;
-                                    return (
-                                        <div key={card.id} className={`aspect-square ${isPlaced ? 'invisible' : ''} w-full`}>
-                                            {renderCard(card)}
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        </div>
-                    </div>
+                    </header>
 
-                    {/* 問題エリア (PC:右, SP:上) */}
-                    <div className="flex-1 h-[70%] md:h-full flex flex-col bg-orange-50 order-1 md:order-2">
-                        <header className="bg-white shadow-sm px-4 py-2 flex justify-between items-center border-b-2 border-orange-100 z-10 shrink-0">
-                            <button onClick={() => setGameState('start')} className="text-orange-600 flex items-center gap-1 text-sm font-bold bg-orange-100 px-3 py-1 rounded-full"><Home size={16}/> トップ</button>
-                            <div className="text-orange-800 font-bold text-sm">のこり <span className="text-xl text-orange-500">{IDIOM_DATABASE.length - solvedIdioms.length}</span> 問</div>
-                            <div className="w-20 flex justify-end">
-                                {isAllComplete && (
-                                    <button onClick={handleRoundComplete} className="bg-green-500 text-white text-sm font-bold py-1 px-3 rounded-full shadow-md flex items-center gap-1 animate-bounce">
-                                        次へ <ArrowRight size={16}/>
-                                    </button>
-                                )}
-                            </div>
-                        </header>
-
-                        <div className="flex-1 overflow-y-auto p-2 md:p-4 space-y-4">
-                            {currentIdioms.map((idiom, iIdx) => (
-                                <div key={iIdx} className="bg-white p-2 rounded-xl shadow-sm border border-orange-200">
-                                    <div className="mb-2 text-sm md:text-base bg-amber-100 text-black font-bold px-3 py-2 rounded-lg border-l-4 border-amber-400 flex items-start gap-2">
-                                        <span className="shrink-0">意味:</span>
-                                        <span className="leading-relaxed">{parseMeaning(idiom.meaning)}</span>
-                                    </div>
-                                    
-                                    <div className="flex gap-2 items-center justify-start">
-                                        <div className="flex gap-1 md:gap-2">
-                                            {[0,1,2,3].map(cIdx => {
-                                                const slotId = `slot-${iIdx}-${cIdx}`;
-                                                const card = cards.find(c => c.currentSlotId === slotId);
-                                                return (
-                                                    <div key={slotId} data-slot-id={slotId} className={`drop-zone w-16 h-16 md:w-24 md:h-24 rounded-xl flex items-center justify-center transition-colors ${card ? '' : 'bg-stone-100 border-2 border-dashed border-stone-300'}`}>
-                                                        {!card && <div className="w-2 h-2 bg-stone-300 rounded-full"></div>}
-                                                        {card && renderCard(card)}
-                                                    </div>
-                                                );
-                                            })}
-                                        </div>
-                                        
-                                        <div className="w-12 flex flex-col gap-1">
-                                            {completedRows[iIdx] ? (
-                                                <div className="text-rose-500 animate-bounce-in"><Circle size={40} strokeWidth={3}/></div>
-                                            ) : (
-                                                <>
-                                                    <button onClick={() => handleHint(iIdx)} className="bg-yellow-400 text-white p-1 rounded-lg shadow-sm flex justify-center"><Lightbulb size={16}/></button>
-                                                    <button onClick={() => handleShowAnswer(iIdx)} className="bg-sky-400 text-white p-1 rounded-lg shadow-sm flex justify-center"><Eye size={16}/></button>
-                                                </>
-                                            )}
-                                        </div>
+                    {/* コンテンツエリア (flex-row: PCでは横並び, SPでは独自レイアウト) */}
+                    <div className="flex-1 flex flex-col md:flex-row overflow-hidden items-start pt-2 px-2 pb-2 gap-2">
+                        
+                        {/* 左：漢字カードエリア (PC: order-1, SP: order-2) */}
+                        <div className="md:w-1/3 flex flex-col order-2 md:order-1 z-20 w-full h-[30%] md:h-auto md:max-h-full">
+                            <div className="border-4 border-orange-300 rounded-2xl overflow-hidden flex flex-col bg-orange-100 relative shadow-sm h-full md:h-auto md:max-h-full">
+                                <div className="p-2 bg-orange-200 text-orange-800 font-bold flex justify-between items-center shrink-0">
+                                    <span className="flex items-center gap-2"><Star className="fill-orange-500 text-orange-500" size={18}/> 漢字カード</span>
+                                    <span className="text-xs bg-white px-2 py-0.5 rounded-full text-orange-600">あと {cards.filter(c => !c.currentSlotId).length} 枚</span>
+                                </div>
+                                <div className="flex-1 p-2 overflow-y-auto">
+                                    <div className="flex flex-wrap justify-center gap-2">
+                                        {cards.map(card => {
+                                            const isPlaced = card.currentSlotId !== null;
+                                            return (
+                                                <div key={card.id} className={`${isPlaced ? 'invisible' : ''} w-16 h-16 md:w-24 md:h-24`}>
+                                                    {renderCard(card)}
+                                                </div>
+                                            );
+                                        })}
                                     </div>
                                 </div>
-                            ))}
+                            </div>
+                        </div>
+
+                        {/* 右：問題エリア (PC: order-2, SP: order-1) */}
+                        <div className="flex-1 flex flex-col order-1 md:order-2 w-full h-[70%] md:h-auto md:max-h-full items-start overflow-hidden">
+                            <div className="border-4 border-orange-300 rounded-2xl overflow-hidden flex flex-col bg-white/30 relative w-fit max-w-full max-h-full">
+                                <div className="bg-orange-200 text-orange-800 text-center py-1 text-xs font-bold shrink-0">
+                                    漢字カードをドラッグして、四字熟語を完成させよう
+                                </div>
+                                <div className="overflow-y-auto p-2 md:p-4 space-y-4">
+                                    {currentIdioms.map((idiom, iIdx) => (
+                                        <div key={iIdx} className="bg-white p-2 rounded-xl shadow-sm border border-orange-200 w-fit max-w-full">
+                                            <div className="mb-2 text-sm md:text-base bg-amber-100 text-black font-bold px-3 py-2 rounded-lg border-l-4 border-amber-400 flex items-start gap-2">
+                                                <span className="shrink-0">意味:</span>
+                                                <span className="leading-relaxed">{parseMeaning(idiom.meaning)}</span>
+                                            </div>
+                                            
+                                            <div className="flex gap-2 items-center justify-start">
+                                                <div className="flex gap-1 md:gap-2">
+                                                    {[0,1,2,3].map(cIdx => {
+                                                        const slotId = `slot-${iIdx}-${cIdx}`;
+                                                        const card = cards.find(c => c.currentSlotId === slotId);
+                                                        return (
+                                                            <div key={slotId} data-slot-id={slotId} className={`drop-zone w-16 h-16 md:w-24 md:h-24 rounded-xl flex items-center justify-center transition-colors ${card ? '' : 'bg-stone-100 border-2 border-dashed border-stone-300'}`}>
+                                                                {!card && <div className="w-2 h-2 bg-stone-300 rounded-full"></div>}
+                                                                {card && renderCard(card)}
+                                                            </div>
+                                                        );
+                                                    })}
+                                                </div>
+                                                
+                                                <div className="w-12 flex flex-col gap-1">
+                                                    {completedRows[iIdx] ? (
+                                                        <div className="text-rose-500 animate-bounce-in"><Circle size={40} strokeWidth={3}/></div>
+                                                    ) : (
+                                                        <>
+                                                            <button onClick={() => handleHint(iIdx)} className="bg-yellow-400 text-white p-1 rounded-lg shadow-sm flex justify-center"><Lightbulb size={16}/></button>
+                                                            <button onClick={() => handleShowAnswer(iIdx)} className="bg-sky-400 text-white p-1 rounded-lg shadow-sm flex justify-center"><Eye size={16}/></button>
+                                                        </>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
                     </div>
 
