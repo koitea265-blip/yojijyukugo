@@ -206,6 +206,8 @@
 
             const [draggedCardId, setDraggedCardId] = useState(null);
             const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 });
+            // 追加: ドラッグ中のカードのサイズを保持
+            const [draggedCardDims, setDraggedCardDims] = useState({ width: 0, height: 0 });
             // 追加: 現在ドラッグ中のカードが重なっているドロップゾーンのID
             const [activeDropZoneId, setActiveDropZoneId] = useState(null);
             
@@ -338,9 +340,49 @@
                     const slot = slots.find(s => s.id === card.currentSlotId);
                     if (slot && completedRows[slot.idiomIndex]) return;
                 }
+                
+                // カードのサイズを取得
+                const rect = e.currentTarget.getBoundingClientRect();
+                setDraggedCardDims({ width: rect.width, height: rect.height });
+
                 setDraggedCardId(cardId);
                 setDragPosition({ x: e.clientX, y: e.clientY });
                 setCards(prev => prev.map(c => c.id === cardId ? { ...c, isDragging: true } : c));
+            };
+
+            // 交差判定ヘルパー関数
+            const getIntersectingDropZone = (pointerX, pointerY, cardDims) => {
+                const dropZones = document.querySelectorAll('.drop-zone');
+                let bestZone = null;
+                let maxOverlapArea = 0;
+
+                // ドラッグ中のカードの推測矩形 (translate -50%, -120%)
+                const cardW = cardDims.width;
+                const cardH = cardDims.height;
+                const cardLeft = pointerX - (cardW / 2);
+                const cardTop = pointerY - (cardH * 1.2);
+                const cardRight = cardLeft + cardW;
+                const cardBottom = cardTop + cardH;
+
+                dropZones.forEach(zone => {
+                    const rect = zone.getBoundingClientRect();
+                    
+                    // 矩形の交差判定
+                    const intersectLeft = Math.max(cardLeft, rect.left);
+                    const intersectTop = Math.max(cardTop, rect.top);
+                    const intersectRight = Math.min(cardRight, rect.right);
+                    const intersectBottom = Math.min(cardBottom, rect.bottom);
+
+                    if (intersectLeft < intersectRight && intersectTop < intersectBottom) {
+                        // 重なっている場合、その面積を計算
+                        const area = (intersectRight - intersectLeft) * (intersectBottom - intersectTop);
+                        if (area > maxOverlapArea) {
+                            maxOverlapArea = area;
+                            bestZone = zone;
+                        }
+                    }
+                });
+                return bestZone;
             };
 
             const handlePointerMove = (e) => {
@@ -348,13 +390,9 @@
                 e.preventDefault();
                 setDragPosition({ x: e.clientX, y: e.clientY });
 
-                // ドロップゾーンの検知とハイライト
-                // カードは指の少し上に表示されているため(translate -120%)、
-                // 判定座標を指の位置よりも上にずらす (約80px) ことで見た目通りの当たり判定にする
-                const detectY = e.clientY - 80;
+                // ドロップゾーンの検知とハイライト (矩形衝突判定)
+                const dropZone = getIntersectingDropZone(e.clientX, e.clientY, draggedCardDims);
                 
-                const elements = document.elementsFromPoint(e.clientX, detectY);
-                const dropZone = elements.find(el => el.classList.contains('drop-zone'));
                 if (dropZone) {
                     setActiveDropZoneId(dropZone.dataset.slotId);
                 } else {
@@ -365,10 +403,8 @@
             const handlePointerUp = (e) => {
                 if (!draggedCardId) return;
                 
-                // ドロップ判定も同様に座標をずらして行う
-                const detectY = e.clientY - 80;
-                const elements = document.elementsFromPoint(e.clientX, detectY);
-                const dropZone = elements.find(el => el.classList.contains('drop-zone'));
+                // ドロップ判定 (矩形衝突判定)
+                const dropZone = getIntersectingDropZone(e.clientX, e.clientY, draggedCardDims);
 
                 setCards(prev => {
                     const newCards = [...prev];
