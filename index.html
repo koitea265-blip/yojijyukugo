@@ -71,22 +71,24 @@
             -o-user-drag: none;
         }
 
-        /* ルビのスタイル調整 - 修正版 */
+        /* ルビのスタイル調整 - Web標準に戻しベースラインを揃える */
         ruby {
-            ruby-position: over;
-            display: inline-flex;
-            flex-direction: column;
-            align-items: center;
-            vertical-align: bottom; /* 行揃えの調整 */
-            line-height: 1;
+            /* 標準的なルビ表示を使用 */
+            display: ruby;
+            ruby-position: over; /* ふりがなを上に */
+            -webkit-ruby-position: over; /* Safari/Chrome用 */
+            vertical-align: baseline; /* ベースラインを揃える */
+            margin: 0 2px; /* 漢字間の余白 */
         }
         rt {
-            font-size: 0.6em; 
+            /* 標準的なルビテキスト */
+            display: ruby-text;
+            font-size: 0.55em; 
             color: #57534e; /* stone-600 */
             font-weight: normal;
-            line-height: 1;
-            margin-bottom: -0.2em; /* 漢字に近づける */
             text-align: center;
+            /* 行間を詰める */
+            line-height: 1;
         }
         
         /* タッチ操作の干渉を防ぐ */
@@ -220,23 +222,52 @@
                 try {
                     const AudioContext = window.AudioContext || window.webkitAudioContext;
                     if (!AudioContext) return;
-                    if (!audioCtxRef.current) audioCtxRef.current = new AudioContext();
-                    if (audioCtxRef.current.state === 'suspended') audioCtxRef.current.resume();
-
+                    
+                    if (!audioCtxRef.current) {
+                        audioCtxRef.current = new AudioContext();
+                    }
                     const ctx = audioCtxRef.current;
-                    const osc = ctx.createOscillator();
-                    const gain = ctx.createGain();
-                    osc.connect(gain);
-                    gain.connect(ctx.destination);
+                    
+                    // ユーザー操作時などにresumeが必要
+                    if (ctx.state === 'suspended') {
+                        ctx.resume().catch(() => {});
+                    }
+
+                    const t = ctx.currentTime;
 
                     if (type === 'correct') {
-                        osc.type = 'triangle';
-                        osc.frequency.setValueAtTime(880, ctx.currentTime);
-                        osc.frequency.setValueAtTime(1174.66, ctx.currentTime + 0.1);
-                        gain.gain.setValueAtTime(0.1, ctx.currentTime);
-                        gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.5);
-                        osc.start();
-                        osc.stop(ctx.currentTime + 0.5);
+                        // 「ピンポン！」音を作成 (ソ -> ド)
+                        
+                        // 1音目 (ソ: G5 approx 784Hz)
+                        const osc1 = ctx.createOscillator();
+                        const gain1 = ctx.createGain();
+                        osc1.type = 'sine'; // 柔らかい音
+                        osc1.frequency.setValueAtTime(784, t);
+                        osc1.connect(gain1);
+                        gain1.connect(ctx.destination);
+                        
+                        gain1.gain.setValueAtTime(0, t);
+                        gain1.gain.linearRampToValueAtTime(0.1, t + 0.05); // アタック
+                        gain1.gain.exponentialRampToValueAtTime(0.001, t + 0.4); // リリース
+                        
+                        osc1.start(t);
+                        osc1.stop(t + 0.4);
+
+                        // 2音目 (ド: C6 approx 1047Hz) - 0.15秒後に再生
+                        const osc2 = ctx.createOscillator();
+                        const gain2 = ctx.createGain();
+                        osc2.type = 'sine';
+                        osc2.frequency.setValueAtTime(1047, t + 0.15);
+                        osc2.connect(gain2);
+                        gain2.connect(ctx.destination);
+                        
+                        gain2.gain.setValueAtTime(0, t + 0.15);
+                        gain2.gain.linearRampToValueAtTime(0.1, t + 0.2);
+                        gain2.gain.exponentialRampToValueAtTime(0.001, t + 0.8); // 余韻長め
+                        
+                        osc2.start(t + 0.15);
+                        osc2.stop(t + 0.8);
+
                     } else if (type === 'completion') {
                         osc.type = 'sine';
                         [523.25, 659.25, 783.99, 1046.50, 1318.51].forEach((freq, i) => {
@@ -257,6 +288,19 @@
 
             // ゲーム開始
             const startRandomRound = () => {
+                // スタート時にオーディオコンテキストを確実に再開
+                if (audioCtxRef.current && audioCtxRef.current.state === 'suspended') {
+                    audioCtxRef.current.resume().catch(() => {});
+                } else if (!audioCtxRef.current) {
+                    // まだ作成されていない場合は作成を試みる
+                    try {
+                        const AudioContext = window.AudioContext || window.webkitAudioContext;
+                        if (AudioContext) {
+                            audioCtxRef.current = new AudioContext();
+                        }
+                    } catch(e) {}
+                }
+
                 const unsolvedList = IDIOM_DATABASE.filter(item => !solvedIdioms.includes(item.kanji));
                 if (unsolvedList.length === 0) {
                     setGameState('all_clear');
@@ -305,7 +349,11 @@
                 setDragPosition({ x: e.clientX, y: e.clientY });
 
                 // ドロップゾーンの検知とハイライト
-                const elements = document.elementsFromPoint(e.clientX, e.clientY);
+                // カードは指の少し上に表示されているため(translate -120%)、
+                // 判定座標を指の位置よりも上にずらす (約80px) ことで見た目通りの当たり判定にする
+                const detectY = e.clientY - 80;
+                
+                const elements = document.elementsFromPoint(e.clientX, detectY);
                 const dropZone = elements.find(el => el.classList.contains('drop-zone'));
                 if (dropZone) {
                     setActiveDropZoneId(dropZone.dataset.slotId);
@@ -316,7 +364,10 @@
 
             const handlePointerUp = (e) => {
                 if (!draggedCardId) return;
-                const elements = document.elementsFromPoint(e.clientX, e.clientY);
+                
+                // ドロップ判定も同様に座標をずらして行う
+                const detectY = e.clientY - 80;
+                const elements = document.elementsFromPoint(e.clientX, detectY);
                 const dropZone = elements.find(el => el.classList.contains('drop-zone'));
 
                 setCards(prev => {
