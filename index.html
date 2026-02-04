@@ -71,34 +71,29 @@
             -o-user-drag: none;
         }
 
-        /* ルビのスタイル調整 - Web標準に戻しベースラインを揃える */
+        /* ルビのスタイル調整 - Flexboxで強制的に位置制御 */
         ruby {
-            /* 標準的なルビ表示を使用 */
-            display: ruby;
-            ruby-position: over; /* ふりがなを上に */
-            -webkit-ruby-position: over; /* Safari/Chrome用 */
-            vertical-align: baseline; /* ベースラインを揃える */
-            margin: 0 2px; /* 漢字間の余白 */
+            display: inline-flex;
+            flex-direction: column-reverse; /* ふりがなを上に表示 */
+            align-items: center;
+            vertical-align: text-bottom; /* 修正: 漢字の底辺をテキストの底辺に合わせる */
+            margin: 0 2px;
+            line-height: 1;
         }
         rt {
-            /* 標準的なルビテキスト */
-            display: ruby-text;
-            font-size: 0.55em; 
-            color: #57534e; /* stone-600 */
+            display: block; /* ruby-textではなくblockとして扱う */
+            font-size: 0.6em; 
+            color: #57534e;
             font-weight: normal;
-            text-align: center;
-            /* 行間を詰める */
             line-height: 1;
+            margin-bottom: 0;
+            text-align: center;
         }
 
         /* スマホ向けのルビ調整 */
         @media (max-width: 768px) {
             rt {
-                line-height: 1; 
-                font-size: 0.5em;
-                /* 少し無理やり下げることで間隔を詰める */
-                transform: translateY(2px);
-                display: inline-block; /* transformを効かせるため */
+                font-size: 0.55em;
             }
         }
         
@@ -554,8 +549,8 @@
                         `}
                         style={style}
                     >
-                        {/* スマホ時のみマイナスマージンで近づける -mb-3, leading-noneを追加 */}
-                        <div className="text-[10px] md:text-xs text-stone-500 -mb-3 md:mb-0 leading-none">{card.charReading}</div>
+                        {/* スマホ時のみマイナスマージンで近づける -mb-1に変更 */}
+                        <div className="text-[10px] md:text-xs text-stone-500 -mb-1 md:mb-0 leading-none">{card.charReading}</div>
                         <div className="text-4xl md:text-6xl leading-none">{card.char}</div>
                     </div>
                 );
