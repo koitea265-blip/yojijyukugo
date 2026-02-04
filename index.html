@@ -90,6 +90,14 @@
             /* 行間を詰める */
             line-height: 1;
         }
+
+        /* スマホ向けのルビ調整 */
+        @media (max-width: 768px) {
+            rt {
+                line-height: 0.9; /* 少し詰める */
+                font-size: 0.5em; 
+            }
+        }
         
         /* タッチ操作の干渉を防ぐ */
         .card-touch-action-none {
@@ -543,7 +551,8 @@
                         `}
                         style={style}
                     >
-                        <div className="text-[10px] md:text-xs text-stone-500">{card.charReading}</div>
+                        {/* スマホ時のみマイナスマージンで近づける */}
+                        <div className="text-[10px] md:text-xs text-stone-500 -mb-1 md:mb-0">{card.charReading}</div>
                         <div className="text-4xl md:text-6xl leading-none">{card.char}</div>
                     </div>
                 );
