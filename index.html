@@ -33,8 +33,12 @@
             overflow: hidden; /* HTMLレベルでスクロール禁止 */
         }
         body {
-            /* フォント優先順位 */
-            font-family: 'UD Digi Kyokasho N-R', 'UD Digi Kyokasho', 'BIZ UDPGothic', 'Klee One', 'YuMincho', serif;
+            /* フォント優先順位:
+               1. UD デジタル 教科書体 (Windows 10/11, Chromebook標準)
+               2. Klee One (Google Fonts - 教科書体風: スマホ等で優先)
+               3. 明朝体フォント群 (Mac/iOS/Windows)
+            */
+            font-family: 'UD Digi Kyokasho N-R', 'UD Digi Kyokasho', 'Klee One', 'YuMincho', 'Hiragino Mincho ProN', 'Yu Mincho', 'MS PMincho', serif;
             background-color: #fffbeb; /* yellow-50 */
             /* 画面固定設定（モバイル対応） */
             position: fixed;
@@ -72,10 +76,10 @@
             ruby-position: over;
         }
         rt {
-            font-size: 0.5em;
+            font-size: 0.6em; /* 少し大きくして視認性向上 */
             color: #57534e; /* stone-600 */
             font-weight: normal;
-            margin-bottom: -5px;
+            /* margin-bottomを削除して重なりを解消 */
         }
         /* アニメーション定義 */
         @keyframes bounce-in {
@@ -187,6 +191,9 @@
 
             const [draggedCardId, setDraggedCardId] = useState(null);
             const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 });
+            // 追加: 現在ドラッグ中のカードが重なっているドロップゾーンのID
+            const [activeDropZoneId, setActiveDropZoneId] = useState(null);
+            
             const containerRef = useRef(null);
             const audioCtxRef = useRef(null);
 
@@ -283,6 +290,15 @@
                 if (!draggedCardId) return;
                 e.preventDefault();
                 setDragPosition({ x: e.clientX, y: e.clientY });
+
+                // ドロップゾーンの検知とハイライト
+                const elements = document.elementsFromPoint(e.clientX, e.clientY);
+                const dropZone = elements.find(el => el.classList.contains('drop-zone'));
+                if (dropZone) {
+                    setActiveDropZoneId(dropZone.dataset.slotId);
+                } else {
+                    setActiveDropZoneId(null);
+                }
             };
 
             const handlePointerUp = (e) => {
@@ -312,6 +328,7 @@
                     return newCards;
                 });
                 setDraggedCardId(null);
+                setActiveDropZoneId(null); // ハイライトのリセット
             };
 
             // 判定ロジック
@@ -409,11 +426,11 @@
                     <div
                         key={card.id}
                         onPointerDown={(e) => handlePointerDown(e, card.id)}
-                        className={`flex flex-col items-center justify-center rounded-xl select-none cursor-grab active:cursor-grabbing transition-transform duration-200 font-bold bg-white border-2 border-stone-800 ${card.isDragging ? 'shadow-xl opacity-90 scale-110 w-20 h-20 md:w-24 md:h-24' : 'w-full h-full hover:-translate-y-1 shadow-md'}`}
+                        className={`flex flex-col justify-center items-center gap-0 md:gap-1 rounded-xl select-none cursor-grab active:cursor-grabbing transition-transform duration-200 font-bold bg-white border-2 border-stone-800 ${card.isDragging ? 'shadow-xl opacity-90 scale-110 w-20 h-20 md:w-24 md:h-24' : 'w-full h-full hover:-translate-y-1 shadow-md'}`}
                         style={style}
                     >
-                        <div className="text-[10px] md:text-xs text-stone-500 mb-0.5">{card.charReading}</div>
-                        <div className="text-4xl md:text-6xl leading-none mb-1">{card.char}</div>
+                        <div className="text-[10px] md:text-xs text-stone-500">{card.charReading}</div>
+                        <div className="text-4xl md:text-6xl leading-tight">{card.char}</div>
                     </div>
                 );
             };
@@ -570,7 +587,7 @@
                                         <div key={iIdx} className="bg-white p-2 rounded-xl shadow-sm border border-orange-200 w-fit max-w-full">
                                             <div className="mb-2 text-sm md:text-base bg-amber-100 text-black font-bold px-3 py-2 rounded-lg border-l-4 border-amber-400 flex items-start gap-2">
                                                 <span className="shrink-0">意味:</span>
-                                                <span className="leading-relaxed">{parseMeaning(idiom.meaning)}</span>
+                                                <span className="leading-loose">{parseMeaning(idiom.meaning)}</span>
                                             </div>
                                             
                                             <div className="flex gap-2 items-center justify-start">
@@ -578,9 +595,20 @@
                                                     {[0,1,2,3].map(cIdx => {
                                                         const slotId = `slot-${iIdx}-${cIdx}`;
                                                         const card = cards.find(c => c.currentSlotId === slotId);
+                                                        // アクティブなドロップゾーンかどうか判定
+                                                        const isHovered = activeDropZoneId === slotId;
+                                                        
                                                         return (
-                                                            <div key={slotId} data-slot-id={slotId} className={`drop-zone w-16 h-16 md:w-24 md:h-24 rounded-xl flex items-center justify-center transition-colors ${card ? '' : 'bg-stone-100 border-2 border-dashed border-stone-300'}`}>
-                                                                {!card && <div className="w-2 h-2 bg-stone-300 rounded-full"></div>}
+                                                            <div 
+                                                                key={slotId} 
+                                                                data-slot-id={slotId} 
+                                                                className={`
+                                                                    drop-zone w-16 h-16 md:w-24 md:h-24 rounded-xl flex items-center justify-center transition-all duration-200
+                                                                    ${card ? '' : 'bg-stone-100 border-2 border-dashed border-stone-300'}
+                                                                    ${isHovered ? 'bg-yellow-100 border-yellow-400 border-4 scale-110 shadow-lg' : ''}
+                                                                `}
+                                                            >
+                                                                {!card && <div className={`w-2 h-2 rounded-full ${isHovered ? 'bg-yellow-400' : 'bg-stone-300'}`}></div>}
                                                                 {card && renderCard(card)}
                                                             </div>
                                                         );
