@@ -71,16 +71,29 @@
             -o-user-drag: none;
         }
 
-        /* ルビのスタイル調整 */
+        /* ルビのスタイル調整 - 修正版 */
         ruby {
             ruby-position: over;
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            vertical-align: bottom; /* 行揃えの調整 */
+            line-height: 1;
         }
         rt {
-            font-size: 0.6em; /* 少し大きくして視認性向上 */
+            font-size: 0.6em; 
             color: #57534e; /* stone-600 */
             font-weight: normal;
-            /* margin-bottomを削除して重なりを解消 */
+            line-height: 1;
+            margin-bottom: -0.2em; /* 漢字に近づける */
+            text-align: center;
         }
+        
+        /* タッチ操作の干渉を防ぐ */
+        .card-touch-action-none {
+            touch-action: none;
+        }
+
         /* アニメーション定義 */
         @keyframes bounce-in {
             0% { transform: scale(0); opacity: 0; }
@@ -331,6 +344,14 @@
                 setActiveDropZoneId(null); // ハイライトのリセット
             };
 
+            // 追加: ドラッグキャンセル時の処理 (画面外に出た場合など)
+            const handlePointerCancel = () => {
+                if (!draggedCardId) return;
+                setCards(prev => prev.map(c => c.id === draggedCardId ? { ...c, isDragging: false } : c));
+                setDraggedCardId(null);
+                setActiveDropZoneId(null);
+            };
+
             // 判定ロジック
             useEffect(() => {
                 if (gameState !== 'playing') return;
@@ -405,10 +426,12 @@
                 if (draggedCardId) {
                     window.addEventListener('pointermove', handlePointerMove, { passive: false });
                     window.addEventListener('pointerup', handlePointerUp);
+                    window.addEventListener('pointercancel', handlePointerCancel);
                 }
                 return () => {
                     window.removeEventListener('pointermove', handlePointerMove);
                     window.removeEventListener('pointerup', handlePointerUp);
+                    window.removeEventListener('pointercancel', handlePointerCancel);
                 };
             }, [draggedCardId]);
 
@@ -419,18 +442,22 @@
                 // スマホタッチ時の視認性向上: 指の少し上に表示 (-100% オフセット)
                 const style = card.isDragging ? {
                     position: 'fixed', left: dragPosition.x, top: dragPosition.y,
-                    transform: 'translate(-50%, -100%)', zIndex: 9999, pointerEvents: 'none'
+                    transform: 'translate(-50%, -120%)', zIndex: 9999, pointerEvents: 'none'
                 } : { position: 'relative', width: '100%', height: '100%' };
                 
                 return (
                     <div
                         key={card.id}
                         onPointerDown={(e) => handlePointerDown(e, card.id)}
-                        className={`flex flex-col justify-center items-center gap-0 md:gap-1 rounded-xl select-none cursor-grab active:cursor-grabbing transition-transform duration-200 font-bold bg-white border-2 border-stone-800 ${card.isDragging ? 'shadow-xl opacity-90 scale-110 w-20 h-20 md:w-24 md:h-24' : 'w-full h-full hover:-translate-y-1 shadow-md'}`}
+                        className={`
+                            card-touch-action-none
+                            flex flex-col justify-center items-center gap-0 md:gap-1 rounded-xl select-none cursor-grab active:cursor-grabbing transition-transform duration-200 font-bold bg-white border-2 border-stone-800 
+                            ${card.isDragging ? 'shadow-xl opacity-90 scale-110 w-20 h-20 md:w-24 md:h-24' : 'w-full h-full hover:-translate-y-1 shadow-md'}
+                        `}
                         style={style}
                     >
                         <div className="text-[10px] md:text-xs text-stone-500">{card.charReading}</div>
-                        <div className="text-4xl md:text-6xl leading-tight">{card.char}</div>
+                        <div className="text-4xl md:text-6xl leading-none">{card.char}</div>
                     </div>
                 );
             };
