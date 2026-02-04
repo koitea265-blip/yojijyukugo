@@ -33,11 +33,7 @@
             overflow: hidden; /* HTMLレベルでスクロール禁止 */
         }
         body {
-            /* フォント優先順位:
-               1. UD デジタル 教科書体 (Windows 10/11, Chromebook標準)
-               2. Klee One (Google Fonts - 教科書体風: スマホ等で優先)
-               3. 明朝体フォント群 (Mac/iOS/Windows)
-            */
+            /* フォント優先順位 */
             font-family: 'UD Digi Kyokasho N-R', 'UD Digi Kyokasho', 'Klee One', 'YuMincho', 'Hiragino Mincho ProN', 'Yu Mincho', 'MS PMincho', serif;
             background-color: #fffbeb; /* yellow-50 */
             /* 画面固定設定（モバイル対応） */
@@ -71,30 +67,19 @@
             -o-user-drag: none;
         }
 
-        /* ルビのスタイル調整 - Flexboxで強制的に位置制御 */
+        /* ルビのスタイル調整 - Web標準に戻す */
         ruby {
-            display: inline-flex;
-            flex-direction: column-reverse; /* ふりがなを上に表示 */
-            align-items: center;
-            vertical-align: bottom; /* 修正: 漢字の底辺を行の下端に合わせる */
+            display: ruby; /* 標準のルビ表示 */
+            ruby-position: over; /* ふりがなを上に */
             margin: 0 2px;
-            line-height: 1;
         }
         rt {
-            display: block; /* ruby-textではなくblockとして扱う */
-            font-size: 0.6em; 
-            color: #57534e;
+            font-size: 0.55em; /* 小さめに */
+            color: #57534e; /* stone-600 */
             font-weight: normal;
-            line-height: 1;
-            margin-bottom: 0;
             text-align: center;
-        }
-
-        /* スマホ向けのルビ調整 */
-        @media (max-width: 768px) {
-            rt {
-                font-size: 0.55em;
-            }
+            /* 行間を詰めて漢字に近づける */
+            line-height: 1.0; 
         }
         
         /* タッチ操作の干渉を防ぐ */
