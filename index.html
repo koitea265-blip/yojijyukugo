@@ -1,106 +1,102 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>四字熟語クイズ</title>
-
-<!-- Tailwind CSS -->
-<script src="https://cdn.tailwindcss.com"></script>
-
-<!-- Google Fonts (Klee One) -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&display=swap" rel="stylesheet">
-
-<!-- Import Map for React modules -->
-<script type="importmap">
-{
-  "imports": {
-    "react": "https://esm.sh/react@18.2.0",
-    "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
-    "lucide-react": "https://esm.sh/lucide-react@0.263.1"
-  }
-}
-</script>
-
-<!-- Babel Standalone for JSX -->
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
-<style>
-    /* ベースフォント設定 */
-    html {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        overflow: hidden; /* HTMLレベルでスクロール禁止 */
-    }
-    body {
-        font-family: 'Klee One', 'UD Digi Kyokasho N-R', 'YuMincho', serif;
-        background-color: #fffbeb; /* yellow-50 */
-        
-        /* 画面固定設定（モバイル対応） */
-        position: fixed;
-        inset: 0;
-        width: 100%;
-        height: 100dvh; /* ダイナミックビューポート対応 */
-        
-        overscroll-behavior: none;
-        touch-action: none;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>四字熟語クイズ</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts (Klee One & BIZ UDPGothic) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Klee+One:wght@400;600&display=swap" rel="stylesheet">
     
-    #root {
-        height: 100%;
-        width: 100%;
-        overflow: hidden;
+    <!-- Import Map for React modules -->
+    <script type="importmap">
+    {
+        "imports": {
+            "react": "https://esm.sh/react@18.2.0",
+            "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+            "lucide-react": "https://esm.sh/lucide-react@0.263.1"
+        }
     }
+    </script>
+    <!-- Babel Standalone -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-    /* ルビのスタイル調整 */
-    ruby {
-        ruby-position: over;
-    }
-    rt {
-        font-size: 0.5em;
-        color: #57534e; /* stone-600 */
-        font-weight: normal;
-        margin-bottom: -5px;
-    }
-
-    /* アニメーション定義 */
-    @keyframes bounce-in {
-        0% { transform: scale(0); opacity: 0; }
-        60% { transform: scale(1.2); opacity: 1; }
-        100% { transform: scale(1); }
-    }
-    .animate-bounce-in {
-        animation: bounce-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-    }
-
-    /* スクロールバーのカスタマイズ（チラつき防止） */
-    .no-scrollbar::-webkit-scrollbar {
-        width: 8px;
-    }
-    .no-scrollbar::-webkit-scrollbar-track {
-        background: transparent; 
-    }
-    .no-scrollbar::-webkit-scrollbar-thumb {
-        background-color: rgba(156, 163, 175, 0.5);
-        border-radius: 20px;
-    }
-
-    /* テキスト選択無効化 */
-    .select-none {
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-    }
-</style>
+    <style>
+        /* ベースフォント設定 */
+        html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* HTMLレベルでスクロール禁止 */
+        }
+        body {
+            /* フォント優先順位:
+               1. UD デジタル 教科書体 (Windows 10/11, Chromebook標準)
+               2. BIZ UDPGothic (Google Fonts - UDゴシック)
+               3. Klee One (Google Fonts - 教科書体風)
+            */
+            font-family: 'UD Digi Kyokasho N-R', 'UD Digi Kyokasho', 'BIZ UDPGothic', 'Klee One', 'YuMincho', serif;
+            background-color: #fffbeb; /* yellow-50 */
+            /* 画面固定設定（モバイル対応） */
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100dvh; /* ダイナミックビューポート対応 */
+            overscroll-behavior: none;
+            touch-action: none;
+        }
+        #root {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+        /* ルビのスタイル調整 */
+        ruby {
+            ruby-position: over;
+        }
+        rt {
+            font-size: 0.5em;
+            color: #57534e; /* stone-600 */
+            font-weight: normal;
+            margin-bottom: -5px;
+        }
+        /* アニメーション定義 */
+        @keyframes bounce-in {
+            0% { transform: scale(0); opacity: 0; }
+            60% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+        .animate-bounce-in {
+            animation: bounce-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        /* スクロールバーのカスタマイズ（チラつき防止） */
+        .no-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .no-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .no-scrollbar::-webkit-scrollbar-thumb {
+            background-color: rgba(156, 163, 175, 0.5);
+            border-radius: 20px;
+        }
+        /* テキスト選択無効化 */
+        .select-none {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+    </style>
 </head>
 <body>
     <div id="root"></div>
 
-    <script type="text/babel" data-type="module">
+    <!-- アプリのソースコードをテキストとして保持 -->
+    <script id="app-source" type="text/plain">
         import React, { useState, useEffect, useRef, useCallback } from 'react';
         import { createRoot } from 'react-dom/client';
         import { Sparkles, ArrowRight, RotateCcw, HelpCircle, GripVertical, Check, X, Circle, Star, Trophy, Trash2, Home, Lightbulb, Eye, Save } from 'lucide-react';
@@ -129,140 +125,29 @@
             );
         };
 
-        // --- データセット (120個) ---
+        // --- データセット (抜粋) ---
         const IDIOM_DATABASE = [
-            // 1-10
             { kanji: "一石二鳥", reading: "いっせきにちょう", charReadings: ["いっ","せき","に","ちょう"], meaning: "一(ひと)つの行為(こうい)で二(ふた)つの利益(りえき)を得(え)ること。" },
             { kanji: "一心同体", reading: "いっしんどうたい", charReadings: ["いっ","しん","どう","たい"], meaning: "二人(ふたり)以上(いじょう)の人(ひと)が、心(こころ)も体(からだ)も一(ひと)つであるかのように強(つよ)く結(むす)びつくこと。" },
             { kanji: "一生懸命", reading: "いっしょうけんめい", charReadings: ["いっ","しょう","けん","めい"], meaning: "命(いのち)がけで事(こと)に当(あ)たるように、本気(ほんき)で物事(ものごと)を行(おこな)うこと。" },
-            { kanji: "一長一短", reading: "いっちょういったん", charReadings: ["いっ","ちょう","いっ","たん"], meaning: "長所(ちょうしょ)もあれば短所(たんしょ)もあるということ。" },
-            { kanji: "右往左往", reading: "うおうさおう", charReadings: ["う","おう","さ","おう"], meaning: "混乱(こんらん)して、あっちへ行(い)ったりこっちへ行(い)ったりすること。" },
-            { kanji: "海千山千", reading: "うみせんやません", charReadings: ["うみ","せん","やま","せん"], meaning: "世の中(よのなか)の経験(けいけん)を積(つ)んでいて、ずる賢(がしこ)いこと。" },
             { kanji: "起死回生", reading: "きしかいせい", charReadings: ["き","し","かい","せい"], meaning: "絶望的(ぜつぼうてき)な状態(じょうたい)から立(た)て直(なお)すこと。" },
             { kanji: "喜怒哀楽", reading: "きどあいらく", charReadings: ["き","ど","あい","らく"], meaning: "喜(よろこ)び、怒(いか)り、哀(かな)しみ、楽(たの)しみなどの人間(にんげん)の感情(かんじょう)。" },
-            { kanji: "急転直下", reading: "きゅうてんちょっか", charReadings: ["きゅう","てん","ちょっ","か"], meaning: "事態(じたい)が急(きゅう)に変(か)わって、解決(かいけつ)に向(む)かうこと。" },
-            { kanji: "空前絶後", reading: "くうぜんぜつご", charReadings: ["くう","ぜん","ぜつ","ご"], meaning: "これまでにもなく、これからもないだろうと思われるほど珍(めずら)しいこと。" },
-            // 11-20
-            { kanji: "言行一致", reading: "げんこういっち", charReadings: ["げん","こう","いっ","ち"], meaning: "言(い)うことと行(おこな)うことがぴったり同(おな)じであること。" },
-            { kanji: "厚顔無恥", reading: "こうがんむち", charReadings: ["こう","がん","む","ち"], meaning: "厚かましくて、恥(は)じ入(い)る気持(きも)ちがないこと。" },
-            { kanji: "公明正大", reading: "こうめいせいだい", charReadings: ["こう","めい","せい","だい"], meaning: "隠(かく)し事(ごと)がなく、正(ただ)しく堂々(どうどう)としていること。" },
-            { kanji: "古今東西", reading: "ここんとうざい", charReadings: ["こ","こん","とう","ざい"], meaning: "昔(むかし)から今(いま)まで、あらゆる場所(ばしょ)のこと。" },
-            { kanji: "五里霧中", reading: "ごりむちゅう", charReadings: ["ご","り","む","ちゅう"], meaning: "物事(ものごと)の様子(ようす)がわからず、方針(ほうしん)や見込(みこ)みが立(た)たないこと。" },
-            { kanji: "言語道断", reading: "ごんごどうだん", charReadings: ["ごん","ご","どう","だん"], meaning: "言葉(ことば)で言(い)い表(あらわ)せないほどひどいこと。" },
             { kanji: "自画自賛", reading: "じがじさん", charReadings: ["じ","が","じ","さん"], meaning: "自分(じぶん)でしたことを、自分(じぶん)で褒(ほ)めること。" },
-            { kanji: "自業自得", reading: "じごうじとく", charReadings: ["じ","ごう","じ","とく"], meaning: "自分(じぶん)の行(おこな)いの報(むく)いを、自分(じぶん)が受(う)けること。" },
-            { kanji: "四苦八苦", reading: "しくはっく", charReadings: ["し","く","はっ","く"], meaning: "非常(ひじょう)に苦労(くろう)すること。" },
-            { kanji: "試行錯誤", reading: "しこうさくご", charReadings: ["し","こう","さく","ご"], meaning: "失敗(しっぱい)を繰(く)り返(かえ)しながら、解決策(かいけつさく)を見(み)つけ出(だ)すこと。" },
-            // 21-30
-            { kanji: "自暴自棄", reading: "じぼうじき", charReadings: ["じ","ぼう","じ","き"], meaning: "失望(しつぼう)して、自分(じぶん)なんてどうなってもいいと思(おも)うこと。" },
             { kanji: "四面楚歌", reading: "しめんそか", charReadings: ["し","めん","そ","か"], meaning: "周(まわ)りが敵(てき)や反対者(はんたいしゃ)ばかりで助(たす)けがないこと。" },
             { kanji: "弱肉強食", reading: "じゃくにくきょうしょく", charReadings: ["じゃく","にく","きょう","しょく"], meaning: "弱(よわ)い者(もの)が強(つよ)い者(もの)の犠牲(ぎせい)になること。" },
             { kanji: "十人十色", reading: "じゅうにんといろ", charReadings: ["じゅう","にん","と","いろ"], meaning: "人(ひと)それぞれ考(かんが)えや好(この)みが違(ちが)うこと。" },
-            { kanji: "心機一転", reading: "しんきいってん", charReadings: ["しん","き","いっ","てん"], meaning: "あることをきっかけに、気持(きも)ちを良(よ)い方向(ほうこう)に入(い)れ替(か)えること。" },
-            { kanji: "針小棒大", reading: "しんしょうぼうだい", charReadings: ["しん","しょう","ぼう","だい"], meaning: "小(ちい)さなことを、大げさに言(い)うこと。" },
             { kanji: "晴耕雨読", reading: "せいこううどく", charReadings: ["せい","こう","う","どく"], meaning: "晴(は)れた日(ひ)は畑(はたけ)を耕(たがや)し、雨(あめ)の日(ひ)は本(ほん)を読(よ)むような、自由(じゆう)な暮(く)らし。" },
             { kanji: "絶体絶命", reading: "ぜったいぜつめい", charReadings: ["ぜっ","たい","ぜつ","めい"], meaning: "どうにも逃(のが)れようのない危険(きけん)な立場(たちば)。" },
-            { kanji: "千差万別", reading: "せんさばんべつ", charReadings: ["せん","さ","ばん","べつ"], meaning: "種類(しゅるい)や違(ちが)いが様々(さまざま)であること。" },
-            { kanji: "前代未聞", reading: "ぜんだいみもん", charReadings: ["ぜん","だい","み","もん"], meaning: "これまでに聞(き)いたこともないような珍(めずら)しい出来事(できごと)。" },
-            // 31-40
             { kanji: "大器晩成", reading: "たいきばんせい", charReadings: ["たい","き","ばん","せい"], meaning: "偉大(いだい)な人物(じんぶつ)は、世(よ)に出(で)るまでに時間(じかん)がかかること。" },
-            { kanji: "大胆不敵", reading: "だいたんふてき", charReadings: ["だい","たん","ふ","てき"], meaning: "度胸(どきょう)があって、何(なに)も恐(おそ)れないこと。" },
-            { kanji: "単刀直入", reading: "たんとうちょくにゅう", charReadings: ["たん","とう","ちょく","にゅう"], meaning: "前置(まえお)きなしに、いきなり本題(ほんだい)に入(はい)ること。" },
-            { kanji: "猪突猛進", reading: "ちょとつもうしん", charReadings: ["ちょ","とつ","もう","しん"], meaning: "目標(もくひょう)に向(む)かって、向(む)こう見(み)ずに突(つ)き進(すす)むこと。" },
-            { kanji: "適材適所", reading: "てきざいてきしょ", charReadings: ["てき","ざい","てき","しょ"], meaning: "その人(ひと)の才能(さいのう)に合(あ)った地位(ちい)や仕事(しごと)を与(あた)えること。" },
             { kanji: "電光石火", reading: "でんこうせっか", charReadings: ["でん","こう","せっ","か"], meaning: "動作(どうさ)などが非常(ひじょう)に素早(すばや)いことのたとえ。" },
-            { kanji: "東奔西走", reading: "とうほんせいそう", charReadings: ["とう","ほん","せい","そう"], meaning: "あちこち忙(いそが)しく駆(か)け回(まわ)ること。" },
-            { kanji: "独立独歩", reading: "どくりつどっぽ", charReadings: ["どく","りつ","どっ","ぽ"], meaning: "他人(たにん)に頼(たよ)らず、自分(じぶん)の力(ちから)で信(しん)じる道(みち)を行(い)くこと。" },
             { kanji: "日進月歩", reading: "にっしんげっぽ", charReadings: ["にっ","しん","げっ","ぽ"], meaning: "絶(た)え間(ま)なくどんどん進歩(しんぽ)すること。" },
-            { kanji: "二束三文", reading: "にそくさんもん", charReadings: ["に","そく","さん","もん"], meaning: "数(かず)が多(おお)くても値段(ねだん)がとても安(やす)いこと。" },
-            // 41-50
             { kanji: "馬耳東風", reading: "ばじとうふう", charReadings: ["ば","じ","とう","ふう"], meaning: "人(ひと)の意見(いけん)や批評(ひひょう)を聞(き)き流(なが)して、気(き)にしないこと。" },
-            { kanji: "半信半疑", reading: "はんしんはんぎ", charReadings: ["はん","しん","はん","ぎ"], meaning: "半分(はんぶん)信(しん)じて、半分(はんぶん)疑(うたが)っていること。" },
-            { kanji: "品行方正", reading: "ひんこうほうせい", charReadings: ["ひん","こう","ほう","せい"], meaning: "行(おこな)いが正(ただ)しく、立派(りっぱ)であること。" },
-            { kanji: "不言実行", reading: "ふげんじっこう", charReadings: ["ふ","げん","じっ","こう"], meaning: "あれこれ言(い)わず、黙(だま)ってなすべきことを実行(じっこう)すること。" },
-            { kanji: "付和雷同", reading: "ふわらいどう", charReadings: ["ふ","わ","らい","どう"], meaning: "自分(じぶん)の意見(いけん)がなく、すぐ他人(たにん)の意見(いけん)に賛成(さんせい)すること。" },
             { kanji: "粉骨砕身", reading: "ふんこつさいしん", charReadings: ["ふん","こつ","さい","しん"], meaning: "骨(ほね)を粉(こ)にし身(み)を砕(くだ)くほど、全力(ぜんりょく)で努力(どりょく)すること。" },
-            { kanji: "本末転倒", reading: "ほんまつてんとう", charReadings: ["ほん","まつ","てん","とう"], meaning: "大事(だいじ)なこととつまらないことを取(と)り違(ちが)えること。" },
             { kanji: "無我夢中", reading: "むがむちゅう", charReadings: ["む","が","む","ちゅう"], meaning: "我(われ)を忘(わす)れるほど、ある物事(ものごと)に熱中(ねっちゅう)すること。" },
-            { kanji: "有名無実", reading: "ゆうめいむじつ", charReadings: ["ゆう","めい","む","じつ"], meaning: "名前(なまえ)だけで、実質(じっしつ)が伴(ともな)っていないこと。" },
             { kanji: "油断大敵", reading: "ゆだんたいてき", charReadings: ["ゆ","だん","たい","てき"], meaning: "気(き)を抜(ぬ)くと失敗(しっぱい)の原因(げんいん)になるので注意(ちゅうい)すること。" },
-            // 51-60
-            { kanji: "優柔不断", reading: "ゆうじゅうふだん", charReadings: ["ゆう","じゅう","ふ","だん"], meaning: "ぐずぐずしていて、なかなか決断(けつだん)できないこと。" },
             { kanji: "臨機応変", reading: "りんきおうへん", charReadings: ["りん","き","おう","へん"], meaning: "その場(ば)の状況(じょうきょう)に応(おう)じて、適切(てきせつ)な処置(しょち)をとること。" },
-            { kanji: "老若男女", reading: "ろうにゃくなんにょ", charReadings: ["ろう","にゃく","なん","にょ"], meaning: "年齢(ねんれい)や性別(せいべつ)に関(かか)わらない、あらゆる人々(ひとびと)。" },
-            { kanji: "異口同音", reading: "いくどうおん", charReadings: ["い","く","どう","おん"], meaning: "大勢(おおぜい)の人(ひと)が、口(くち)をそろえて同(おな)じことを言(い)うこと。" },
-            { kanji: "以心伝心", reading: "いしんでんしん", charReadings: ["い","しん","でん","しん"], meaning: "言葉(ことば)に出(だ)さなくても、お互(たが)いの気持(きも)ちが通(つう)じ合(あ)うこと。" },
-            { kanji: "一網打尽", reading: "いちもうだじん", charReadings: ["いち","もう","だ","じん"], meaning: "一度(いちど)に悪人(あくにん)などを残(のこ)らず捕(つか)まえること。" },
-            { kanji: "一喜一憂", reading: "いっきいちゆう", charReadings: ["いっ","き","いち","ゆう"], meaning: "状況(じょうきょう)が変(か)わるたびに、喜(よろこ)んだり心配(しんぱい)したりすること。" },
-            { kanji: "因果応報", reading: "いんがおうほう", charReadings: ["いん","が","おう","ほう"], meaning: "良(よ)い行(おこな)いには良(よ)い報(むく)い、悪(わる)い行(おこな)いには悪(わる)い報(むく)いがある。" },
             { kanji: "温故知新", reading: "おんこちしん", charReadings: ["おん","こ","ち","しん"], meaning: "昔(むかし)のことを学(まな)び、そこから新(あたら)しい知識(ちしき)や道理(どうり)を得(え)ること。" },
-            { kanji: "花鳥風月", reading: "かちょうふうげつ", charReadings: ["か","ちょう","ふう","げつ"], meaning: "自然(しぜん)の美(うつく)しい風景(ふうけい)。またそれを楽(たの)しむ心(こころ)。" },
-            // 61-70
-            { kanji: "完全無欠", reading: "かんぜんむけつ", charReadings: ["かん","ぜん","む","けつ"], meaning: "欠点(けってん)や不足(ふそく)が全(まった)くないこと。" },
-            { kanji: "危機一髪", reading: "ききいっぱつ", charReadings: ["き","き","いっ","ぱつ"], meaning: "髪(かみ)の毛(け)一本(いっぽん)ほどの差(さ)で、極(きわ)めて危険(きけん)な状態(じょうたい)になること。" },
-            { kanji: "疑心暗鬼", reading: "ぎしんあんき", charReadings: ["ぎ","しん","あん","き"], meaning: "疑(うたが)う心(こころ)があると、何(なん)でもないことまで恐(おそ)ろしく感(かん)じること。" },
-            { kanji: "奇想天外", reading: "きそうてんがい", charReadings: ["き","そう","てん","がい"], meaning: "普通(ふつう)では思(おも)いつかないような、変(か)わった考(かんが)え。" },
-            { kanji: "五臓六腑", reading: "ごぞうろっぷ", charReadings: ["ご","ぞう","ろっ","ぷ"], meaning: "はらわた。体内(たいない)。心(こころ)の底(そこ)。" },
-            { kanji: "再三再四", reading: "さいさんさいし", charReadings: ["さい","さん","さい","し"], meaning: "何度(なんど)も何度(なんど)も繰(く)り返(かえ)すこと。" },
-            { kanji: "才色兼備", reading: "さいしょくけんび", charReadings: ["さい","しょく","けん","び"], meaning: "女性(じょせい)が、優(すぐ)れた才能(さいのう)と美(うつく)しい容姿(ようし)を持(も)つこと。" },
-            { kanji: "三寒四温", reading: "さんかんしおん", charReadings: ["さん","かん","し","おん"], meaning: "冬(ふゆ)の終(お)わりごろ、寒(さむ)い日(ひ)と暖(あたた)かい日(ひ)が交互(こうご)に来(く)ること。" },
-            { kanji: "自画自賛", reading: "じがじさん", charReadings: ["じ","が","じ","さん"], meaning: "自分(じぶん)のしたことを、自分(じぶん)で褒(ほ)めること。" },
-            { kanji: "質実剛健", reading: "しつじつごうけん", charReadings: ["しつ","じつ","ごう","けん"], meaning: "飾(かざ)り気(け)がなく真面目(まじめ)で、心(こころ)も体(からだ)も強(つよ)いこと。" },
-            // 71-80
-            { kanji: "弱肉強食", reading: "じゃくにくきょうしょく", charReadings: ["じゃく","にく","きょう","しょく"], meaning: "弱(よわ)いものが強(つよ)いものの犠牲(ぎせい)になること。" },
-            { kanji: "縦横無尽", reading: "じゅうおうむじん", charReadings: ["じゅう","おう","む","じん"], meaning: "自由自在(じゆうじざい)に振(ふ)る舞(ま)うこと。" },
-            { kanji: "取捨選択", reading: "しゅしゃせんたく", charReadings: ["しゅ","しゃ","せん","たく"], meaning: "必要(ひつよう)なものを選(えら)び、不要(ふよう)なものを捨(す)てること。" },
-            { kanji: "順風満帆", reading: "じゅんぷうまんぱん", charReadings: ["じゅん","ぷう","まん","ぱん"], meaning: "物事(ものごと)が思(おも)い通(どお)りに順調(じゅんちょう)に進(すす)むこと。" },
-            { kanji: "支離滅裂", reading: "しりめつれつ", charReadings: ["し","り","めつ","れつ"], meaning: "ばらばらで、まとまりがないこと。" },
-            { kanji: "神出鬼没", reading: "しんしゅつきぼつ", charReadings: ["しん","しゅつ","き","ぼつ"], meaning: "自由自在(じゆうじざい)に現(あらわ)れたり隠(かく)れたりすること。" },
-            { kanji: "晴天霹靂", reading: "せいてんのへきれき", charReadings: ["せい","てん","へき","れき"], meaning: "急(きゅう)に起(お)こった変動(へんどう)や大事件(だいじけん)。" },
-            { kanji: "絶体絶命", reading: "ぜったいぜつめい", charReadings: ["ぜっ","たい","ぜつ","めい"], meaning: "どうにも逃(のが)れようのない困難(こんなん)な立場(たちば)。" },
-            { kanji: "千載一遇", reading: "せんざいいちぐう", charReadings: ["せん","ざい","いち","ぐう"], meaning: "千(せん)年(ねん)に一度(いちど)しかないような、またとない好機(こうき)。" },
-            { kanji: "創意工夫", reading: "そういくふう", charReadings: ["そう","い","く","ふう"], meaning: "新(あたら)しい考(かんが)えを出(だ)して、いろいろ工夫(くふう)すること。" },
-            // 81-90
-            { kanji: "大器晩成", reading: "たいきばんせい", charReadings: ["たい","き","ばん","せい"], meaning: "大人物(だいじんぶつ)は、世(よ)に出(で)るまでに時間(じかん)がかかること。" },
-            { kanji: "大同小異", reading: "だいどうしょうい", charReadings: ["だい","どう","しょう","い"], meaning: "細(こま)かい違(ちが)いはあるが、だいたいは同(おな)じであること。" },
-            { kanji: "多事多難", reading: "たじたなん", charReadings: ["た","じ","た","なん"], meaning: "事件(じけん)や災難(さいなん)が多(おお)いこと。" },
-            { kanji: "朝令暮改", reading: "ちょうれいぼかい", charReadings: ["ちょう","れい","ぼ","かい"], meaning: "命令(めいれい)や方針(ほうしん)が次々(つぎつぎ)と変(か)わって定(さだ)まらないこと。" },
-            { kanji: "徹頭徹尾", reading: "てっとうてつび", charReadings: ["てっ","とう","てつ","び"], meaning: "最初(さいしょ)から最後(さいご)まで、考(かんが)えや行動(こうどう)を貫(つらぬ)くこと。" },
-            { kanji: "天真爛漫", reading: "てんしんらんまん", charReadings: ["てん","しん","らん","まん"], meaning: "飾(かざ)らず自然(しぜん)のままで、明(あか)るく無邪気(むじゃき)なこと。" },
-            { kanji: "二人三脚", reading: "ににんさんきゃく", charReadings: ["に","にん","さん","きゃく"], meaning: "二人(ふたり)が協力(きょうりょく)して物事(ものごと)を行(おこな)うこと。" },
-            { kanji: "馬耳東風", reading: "ばじとうふう", charReadings: ["ば","じ","とう","ふう"], meaning: "人(ひと)の意見(いけん)を聞(き)き流(なが)して、全(まった)く気(き)にしないこと。" },
-            { kanji: "八方美人", reading: "はっぽうびじん", charReadings: ["はっ","ぽう","び","じん"], meaning: "誰(だれ)にでも愛想(あいそ)よく振(ふ)る舞(ま)う人(ひと)。" },
-            { kanji: "反面教師", reading: "はんめんきょうし", charReadings: ["はん","めん","きょう","し"], meaning: "悪(わる)い見本(みほん)として、自分(じぶん)の反省(はんせい)の材料(ざいりょう)となる人(ひと)。" },
-            // 91-100
-            { kanji: "百発百中", reading: "ひゃっぱつひゃくちゅう", charReadings: ["ひゃっ","ぱつ","ひゃく","ちゅう"], meaning: "計画(けいかく)や予想(よそう)が全(すべ)て当(あ)たること。" },
-            { kanji: "不眠不休", reading: "ふみんふきゅう", charReadings: ["ふ","みん","ふ","きゅう"], meaning: "眠(ねむ)ったり休(やす)んだりせずに事(こと)に当(あ)たること。" },
-            { kanji: "平穏無事", reading: "へいおんぶじ", charReadings: ["へい","おん","ぶ","じ"], meaning: "変(か)わったこともなく、穏(おだ)やかであること。" },
-            { kanji: "傍若無人", reading: "ぼうじゃくぶじん", charReadings: ["ぼう","じゃく","ぶ","じん"], meaning: "周(まわ)りの人(ひと)を気(き)にせず、勝手(かって)気(き)ままに振(ふ)る舞(ま)うこと。" },
-            { kanji: "三日坊主", reading: "みっかぼうず", charReadings: ["みっ","か","ぼう","ず"], meaning: "飽(あ)きっぽくて、長続(ながつづ)きしないこと。" },
-            { kanji: "無病息災", reading: "むびょうそくさい", charReadings: ["む","びょう","そく","さい"], meaning: "病気(びょうき)もせず、元気(げんき)でいること。" },
-            { kanji: "優柔不断", reading: "ゆうじゅうふだん", charReadings: ["ゆう","じゅう","ふ","だん"], meaning: "決断力(けつだんりょく)がなく、ぐずぐずしていること。" },
-            { kanji: "有名無実", reading: "ゆうめいむじつ", charReadings: ["ゆう","めい","む","じつ"], meaning: "名(な)ばかり立派(りっぱ)で、実質(じっしつ)が伴(ともな)っていないこと。" },
-            { kanji: "油断大敵", reading: "ゆだんたいてき", charReadings: ["ゆ","だん","たい","てき"], meaning: "油断(ゆだん)は失敗(しっぱい)のもとであるということ。" },
-            { kanji: "用意周到", reading: "よういしゅうとう", charReadings: ["よう","い","しゅう","とう"], meaning: "準備(じゅんび)が行(ゆ)き届(とど)いていて、手抜(てぬ)かりがないこと。" },
-            // 101-110
-            { kanji: "利害関係", reading: "りがいかんけい", charReadings: ["り","がい","かん","けい"], meaning: "利益(りえき)と損害(そんがい)が直接(ちょくせつ)結(むす)びついている関係(かんけい)。" },
-            { kanji: "竜頭蛇尾", reading: "りゅうとうだび", charReadings: ["りゅう","とう","だ","び"], meaning: "始(はじ)まりは勢(いきお)いがよいが、終(お)わりは振(ふ)るわないこと。" },
-            { kanji: "臨機応変", reading: "りんきおうへん", charReadings: ["りん","き","おう","へん"], meaning: "その場(ば)の状況(じょうきょう)に合(あ)わせて、適切(てきせつ)に対応(たいおう)すること。" },
-            { kanji: "老若男女", reading: "ろうにゃくなんにょ", charReadings: ["ろう","にゃく","なん","にょ"], meaning: "老(お)いも若(わか)きも、男(おとこ)も女(おんな)もすべての人(ひと)。" },
-            { kanji: "和洋折衷", reading: "わようせっちゅう", charReadings: ["わ","よう","せっ","ちゅう"], meaning: "日本(にほん)風(ふう)と西洋(せいよう)風(ふう)をうまく取(と)り合(あ)わせること。" },
-            { kanji: "一目瞭然", reading: "いちもくりょうぜん", charReadings: ["いち","もく","りょう","ぜん"], meaning: "ひとめ見(み)ただけで、はっきりとわかること。" },
-            { kanji: "意気投合", reading: "いきとうごう", charReadings: ["い","き","とう","ごう"], meaning: "お互(たが)いの気持(きも)ちがぴったりと合(あ)うこと。" },
-            { kanji: "一日千秋", reading: "いちじつせんしゅう", charReadings: ["いち","じつ","せん","しゅう"], meaning: "一日(いちにち)が千年(せんねん)のように長(なが)く感(かん)じられるほど、待(ま)ち遠(どお)しいこと。" },
-            { kanji: "右往左往", reading: "うおうさおう", charReadings: ["う","おう","さ","おう"], meaning: "慌(あわ)てふためいて、あっちへ行(い)ったりこっちへ行(い)ったりすること。" },
-            { kanji: "温厚篤実", reading: "おんこうとくじつ", charReadings: ["おん","こう","とく","じつ"], meaning: "穏(おだ)やかで誠実(せいじつ)で、情(じょう)が厚(あつ)いこと。" },
-            // 111-120
-            { kanji: "臥薪嘗胆", reading: "がしんしょうたん", charReadings: ["が","しん","しょう","たん"], meaning: "目的(もくてき)を達成(たっせい)するために、苦労(くろう)に耐(た)えること。" },
-            { kanji: "画竜点睛", reading: "がりょうてんせい", charReadings: ["が","りょう","てん","せい"], meaning: "最後(さいご)の大事(だいじ)な仕上(しあ)げのこと。" },
-            { kanji: "完全燃焼", reading: "かんぜんねんしょう", charReadings: ["かん","ぜん","ねん","しょう"], meaning: "全力を出(だ)し切(き)って、思(おも)い残(のこ)すことがないこと。" },
-            { kanji: "器用貧乏", reading: "きようびんぼう", charReadings: ["き","よう","びん","ぼう"], meaning: "何(なん)でもこなすが、どれも中途半端(ちゅうとはんぱ)で大成(たいせい)しないこと。" },
-            { kanji: "公私混同", reading: "こうしこんどう", charReadings: ["こう","し","こん","どう"], meaning: "公(おおやけ)のことと私的(してき)なことを区別(くべつ)せず混(ま)ぜること。" },
-            { kanji: "自給自足", reading: "じきゅうじそく", charReadings: ["じ","きゅう","じ","そく"], meaning: "必要(ひつよう)なものを自分(じぶん)で生産(せいさん)して間(ま)に合(あ)わせること。" },
-            { kanji: "自問自答", reading: "じもんじとう", charReadings: ["じ","もん","じ","とう"], meaning: "自分(じぶん)で問(と)いかけ、自分(じぶん)で答(こた)えを出(だ)すこと。" },
-            { kanji: "切磋琢磨", reading: "せっさたくま", charReadings: ["せっ","さ","たく","ま"], meaning: "仲間(なかま)同士(どうし)励(はげ)まし合(あ)って、向上(こうじょう)すること。" },
-            { kanji: "文武両道", reading: "ぶんぶりょうどう", charReadings: ["ぶん","ぶ","りょう","どう"], meaning: "学問(がくもん)とスポーツの両方(りょうほう)に優(すぐ)れていること。" },
-            { kanji: "無の境地", reading: "むのきょうち", charReadings: ["む","の","きょう","ち"], meaning: "欲(よく)や邪念(じゃねん)がなくなり、心(こころ)が澄(す)み切(き)った状態(じょうたい)。" },
+            { kanji: "五里霧中", reading: "ごりむちゅう", charReadings: ["ご","り","む","ちゅう"], meaning: "物事(ものごと)の様子(ようす)がわからず、方針(ほうしん)や見込(みこ)みが立(た)たないこと。" }
         ];
 
         const IDIOMS_PER_ROUND = 3;
@@ -278,171 +163,48 @@
             return newArray;
         };
 
-        // --- Web Audio API 音声再生ユーティリティ ---
-        const playSound = (type) => {
-            try {
-            const AudioContext = window.AudioContext || window.webkitAudioContext;
-            if (!AudioContext) return;
-            
-            const ctx = new AudioContext();
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-
-            if (type === 'correct') {
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(880, ctx.currentTime);
-                osc.frequency.setValueAtTime(1174.66, ctx.currentTime + 0.1); // D6
-                gain.gain.setValueAtTime(0.1, ctx.currentTime);
-                gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.5);
-                osc.start();
-                osc.stop(ctx.currentTime + 0.5);
-            } else if (type === 'completion') {
-                osc.type = 'sine';
-                [523.25, 659.25, 783.99, 1046.50, 1318.51].forEach((freq, i) => {
-                const osc2 = ctx.createOscillator();
-                const gain2 = ctx.createGain();
-                osc2.connect(gain2);
-                gain2.connect(ctx.destination);
-                osc2.type = 'triangle';
-                osc2.frequency.value = freq;
-                gain2.gain.setValueAtTime(0.05, ctx.currentTime + i * 0.1);
-                gain2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.1 + 0.5);
-                osc2.start(ctx.currentTime + i * 0.1);
-                osc2.stop(ctx.currentTime + i * 0.1 + 0.5);
-                });
-            }
-            } catch (e) {
-            console.error("Audio play failed", e);
-            }
-        };
-
-
         function YojijukugoPuzzle() {
             const [gameState, setGameState] = useState('start'); // start, playing, result, end, all_clear
             const [currentIdioms, setCurrentIdioms] = useState([]);
-            const [isSaveModalOpen, setIsSaveModalOpen] = useState(false); // モーダル開閉状態
-            
-            // cards: 全カードの状態管理
-            const [cards, setCards] = useState([]); 
-            // slots: 回答枠の定義
-            const [slots, setSlots] = useState([]); 
-            // 各四字熟語が完成しているかどうかのフラグ
-            const [completedRows, setCompletedRows] = useState({}); // { [idiomIndex]: boolean }
-            
-            // 進捗管理
-            // 初期値設定時に関数を渡して、ローカルストレージから同期的に読み込む
+            const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
+            const [cards, setCards] = useState([]);
+            const [slots, setSlots] = useState([]);
+            const [completedRows, setCompletedRows] = useState({});
             const [solvedIdioms, setSolvedIdioms] = useState(() => {
-                // Next.jsなどのSSR環境ではなく、ブラウザで実行されていることを確認
-                if (typeof window !== 'undefined') {
-                    try {
-                        const saved = localStorage.getItem(STORAGE_KEY);
-                        if (saved) {
-                            return JSON.parse(saved);
-                        }
-                    } catch (e) {
-                        console.error("Failed to parse progress or access localStorage", e);
-                    }
-                }
-                return [];
+                try {
+                    const saved = localStorage.getItem(STORAGE_KEY);
+                    return saved ? JSON.parse(saved) : [];
+                } catch (e) { return []; }
             });
 
-            // ドラッグ管理
             const [draggedCardId, setDraggedCardId] = useState(null);
             const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 });
-
             const containerRef = useRef(null);
-            const audioCtxRef = useRef(null); // AudioContext保持用
+            const audioCtxRef = useRef(null);
 
-            // 初期ロード
-            const [isDataLoaded, setIsDataLoaded] = useState(false);
-            
+            // 保存ロジック
             useEffect(() => {
-                // useStateの初期化関数で読み込んでいるが、念のためマウント後にもチェック
-                setIsDataLoaded(true);
-            }, []);
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(solvedIdioms));
+            }, [solvedIdioms]);
 
-            // 保存用の useEffect (ロード完了後のみ保存)
-            useEffect(() => {
-                if (isDataLoaded && typeof window !== 'undefined') {
-                    try {
-                        localStorage.setItem(STORAGE_KEY, JSON.stringify(solvedIdioms));
-                    } catch (e) {
-                        console.error("Failed to save progress", e);
-                    }
-                }
-            }, [solvedIdioms, isDataLoaded]);
-
-            // 進捗を更新する関数
-            const updateProgress = useCallback((completedIdiomsInRound) => {
-                setSolvedIdioms(prev => {
-                    const next = [...prev];
-                    let hasChange = false;
-                    completedIdiomsInRound.forEach(kanji => {
-                        if (!next.includes(kanji)) {
-                        next.push(kanji);
-                        hasChange = true;
-                        }
-                    });
-                    // state更新時にuseEffectが発火して保存される
-                    return hasChange ? next : prev;
-                });
-            }, []);
-
-            // データをリセット
-            const resetProgress = () => {
-            if (confirm("これまでのきろくを消して、最初からやりなおしますか？")) {
-                try {
-                    localStorage.removeItem(STORAGE_KEY);
-                } catch(e) {}
-                setSolvedIdioms([]);
-                setGameState('start');
-            }
-            };
-
-            // トップへ戻るボタン押下時
-            const handleGoHome = () => {
-                setIsSaveModalOpen(true);
-            };
-
-            // モーダルのOK（保存して戻る）
-            const confirmSaveAndExit = () => {
-                // 現在のsolvedIdiomsを強制保存
-                try {
-                    localStorage.setItem(STORAGE_KEY, JSON.stringify(solvedIdioms));
-                } catch(e) {}
-                setIsSaveModalOpen(false);
-                setGameState('start');
-            };
-            
-            // --- 音声再生ロジック（使い回し）---
+            // 音声再生
             const playSoundEffect = useCallback((type) => {
                 try {
                     const AudioContext = window.AudioContext || window.webkitAudioContext;
                     if (!AudioContext) return;
-                    
-                    if (!audioCtxRef.current) {
-                        audioCtxRef.current = new AudioContext();
-                    }
-                    const ctx = audioCtxRef.current;
-                    
-                    // iOS Safari等でSuspendedになっている場合の対策（念のため）
-                    if (ctx.state === 'suspended') {
-                         ctx.resume().catch(e => console.log(e));
-                    }
+                    if (!audioCtxRef.current) audioCtxRef.current = new AudioContext();
+                    if (audioCtxRef.current.state === 'suspended') audioCtxRef.current.resume();
 
+                    const ctx = audioCtxRef.current;
                     const osc = ctx.createOscillator();
                     const gain = ctx.createGain();
-
                     osc.connect(gain);
                     gain.connect(ctx.destination);
 
                     if (type === 'correct') {
                         osc.type = 'triangle';
                         osc.frequency.setValueAtTime(880, ctx.currentTime);
-                        osc.frequency.setValueAtTime(1174.66, ctx.currentTime + 0.1); // D6
+                        osc.frequency.setValueAtTime(1174.66, ctx.currentTime + 0.1);
                         gain.gain.setValueAtTime(0.1, ctx.currentTime);
                         gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.5);
                         osc.start();
@@ -462,634 +224,389 @@
                             osc2.stop(ctx.currentTime + i * 0.1 + 0.5);
                         });
                     }
-                } catch (e) {
-                    console.error("Audio play failed", e);
-                }
+                } catch (e) { console.error("Audio failed", e); }
             }, []);
 
-            // ラウンド開始処理 (ランダム出題)
+            // ゲーム開始
             const startRandomRound = () => {
-                // 最新のデータをローカルストレージから再取得（念のため）
-                let currentSolved = solvedIdioms;
-                try {
-                    const saved = localStorage.getItem(STORAGE_KEY);
-                    if (saved) {
-                        currentSolved = JSON.parse(saved);
-                        setSolvedIdioms(currentSolved);
-                    }
-                } catch (e) { console.error(e); }
-
-                // まだ解いていない問題リストを作成
-                const unsolvedList = IDIOM_DATABASE.filter(item => !currentSolved.includes(item.kanji));
-
+                const unsolvedList = IDIOM_DATABASE.filter(item => !solvedIdioms.includes(item.kanji));
                 if (unsolvedList.length === 0) {
                     setGameState('all_clear');
                     return;
                 }
-
-                // ランダムに3つ選ぶ
-                const shuffledUnsolved = shuffleArray(unsolvedList);
-                const roundData = shuffledUnsolved.slice(0, IDIOMS_PER_ROUND);
-
+                const roundData = shuffleArray(unsolvedList).slice(0, IDIOMS_PER_ROUND);
                 setCurrentIdioms(roundData);
 
                 const newSlots = [];
                 const newCards = [];
-
                 roundData.forEach((idiom, iIdx) => {
-                    const chars = idiom.kanji.split('');
-                    chars.forEach((char, cIdx) => {
-                    const slotId = `slot-${iIdx}-${cIdx}`;
-                    newSlots.push({
-                        id: slotId,
-                        idiomIndex: iIdx,
-                        charIndex: cIdx,
-                        correctChar: char
-                    });
-
-                    // データセットにcharReadingsがある場合はそれを使用、なければ空文字
-                    const charReading = idiom.charReadings ? idiom.charReadings[cIdx] : "";
-
-                    newCards.push({
-                        id: `card-${iIdx}-${cIdx}`,
-                        char: char,
-                        charReading: charReading, // カード用の読み仮名を追加
-                        currentSlotId: null, // null = pool
-                        isDragging: false
-                    });
+                    idiom.kanji.split('').forEach((char, cIdx) => {
+                        const slotId = `slot-${iIdx}-${cIdx}`;
+                        newSlots.push({ id: slotId, idiomIndex: iIdx, charIndex: cIdx, correctChar: char });
+                        newCards.push({
+                            id: `card-${iIdx}-${cIdx}`,
+                            char: char,
+                            charReading: idiom.charReadings ? idiom.charReadings[cIdx] : "",
+                            currentSlotId: null,
+                            isDragging: false
+                        });
                     });
                 });
-
                 setSlots(newSlots);
-                setCards(shuffleArray(newCards)); // カードをシャッフル
+                setCards(shuffleArray(newCards));
                 setCompletedRows({});
                 setGameState('playing');
             };
 
-            // 全問正解時の処理 (次へ)
-            const handleRoundComplete = () => {
-                playSoundEffect('completion');
-                
-                // まだ問題が残っているかチェック
-                if (solvedIdioms.length >= IDIOM_DATABASE.length) {
-                    setGameState('all_clear');
-                } else {
-                    startRandomRound(); 
-                }
-            };
-
-            // リザルト画面から次へ (今回は使わないが関数自体は残しておく、またはリザルト画面を削除するなら不要)
-            const handleNextRound = () => {
-            startRandomRound();
-            };
-
-            // --- Pointer Event Handlers (Chromebook/Touch/Mouse Unified) ---
+            // 操作イベント
             const handlePointerDown = (e, cardId) => {
-            const card = cards.find(c => c.id === cardId);
-            if (card && card.currentSlotId) {
-                const slot = slots.find(s => s.id === card.currentSlotId);
-                if (slot && completedRows[slot.idiomIndex]) return;
-            }
-            
-            // AudioContextの初期化と再開（ユーザー操作時）
-            const AudioContext = window.AudioContext || window.webkitAudioContext;
-            if (AudioContext) {
-                if (!audioCtxRef.current) {
-                    audioCtxRef.current = new AudioContext();
+                const card = cards.find(c => c.id === cardId);
+                // 完了した列のカードは動かせない
+                if (card && card.currentSlotId) {
+                    const slot = slots.find(s => s.id === card.currentSlotId);
+                    if (slot && completedRows[slot.idiomIndex]) return;
                 }
-                if (audioCtxRef.current.state === 'suspended') {
-                    audioCtxRef.current.resume();
-                }
-            }
-            
-            setDraggedCardId(cardId);
-            setDragPosition({ x: e.clientX, y: e.clientY });
-            
-            setCards(prev => prev.map(c => 
-                c.id === cardId ? { ...c, isDragging: true } : c
-            ));
+                setDraggedCardId(cardId);
+                setDragPosition({ x: e.clientX, y: e.clientY });
+                setCards(prev => prev.map(c => c.id === cardId ? { ...c, isDragging: true } : c));
             };
 
             const handlePointerMove = (e) => {
-            if (!draggedCardId) return;
-            e.preventDefault(); // ドラッグ中のスクロール防止
-
-            setDragPosition({ x: e.clientX, y: e.clientY });
+                if (!draggedCardId) return;
+                e.preventDefault();
+                setDragPosition({ x: e.clientX, y: e.clientY });
             };
 
             const handlePointerUp = (e) => {
-            if (!draggedCardId) return;
+                if (!draggedCardId) return;
+                const elements = document.elementsFromPoint(e.clientX, e.clientY);
+                const dropZone = elements.find(el => el.classList.contains('drop-zone'));
 
-            // ドロップ判定
-            const elements = document.elementsFromPoint(e.clientX, e.clientY);
-            const dropZone = elements.find(el => el.classList.contains('drop-zone'));
-
-            setCards(prevCards => {
-                const newCards = [...prevCards];
-                const cardIndex = newCards.findIndex(c => c.id === draggedCardId);
-                const card = newCards[cardIndex];
-
-                if (dropZone) {
-                const targetSlotId = dropZone.dataset.slotId;
-                const targetSlot = slots.find(s => s.id === targetSlotId);
-
-                const isCorrectChar = targetSlot && targetSlot.correctChar === card.char;
-                const isOccupied = newCards.some(c => c.currentSlotId === targetSlotId && c.id !== draggedCardId);
-
-                if (isCorrectChar && !isOccupied) {
-                    newCards[cardIndex].currentSlotId = targetSlotId;
-                } else {
-                    newCards[cardIndex].currentSlotId = null;
-                }
-                } else {
-                newCards[cardIndex].currentSlotId = null;
-                }
-                
-                newCards[cardIndex].isDragging = false;
-                return newCards;
-            });
-
-            setDraggedCardId(null);
-            };
-
-            // --- ヒント・答え 機能 ---
-            
-            // ヒント: 指定行の1文字目(index=0)を正しい位置に配置
-            const handleHint = (idiomIndex) => {
-            const targetCharIndex = 0; // 常に1文字目
-            const targetSlotId = `slot-${idiomIndex}-${targetCharIndex}`;
-            
-            setCards(prevCards => {
-                const newCards = [...prevCards];
-                
-                // 1. 対象のカードを探す (IDで特定)
-                // card ID: card-{idiomIndex}-{charIndex}
-                const targetCardId = `card-${idiomIndex}-${targetCharIndex}`;
-                const targetCardIndex = newCards.findIndex(c => c.id === targetCardId);
-                
-                if (targetCardIndex === -1) return prevCards;
-
-                // 2. 移動先に別のカードがいる場合は追い出す
-                const existingCardIndex = newCards.findIndex(c => c.currentSlotId === targetSlotId && c.id !== targetCardId);
-                if (existingCardIndex !== -1) {
-                newCards[existingCardIndex].currentSlotId = null;
-                }
-
-                // 3. 対象カードを移動
-                newCards[targetCardIndex].currentSlotId = targetSlotId;
-                
-                return newCards;
-            });
-            };
-
-            // 答え: 指定行の全ての文字を正しい位置に配置
-            const handleShowAnswer = (idiomIndex) => {
-            setCards(prevCards => {
-                const newCards = [...prevCards];
-                
-                // 0〜3文字目までループ
-                for (let charIndex = 0; charIndex < 4; charIndex++) {
-                const targetSlotId = `slot-${idiomIndex}-${charIndex}`;
-                const targetCardId = `card-${idiomIndex}-${charIndex}`;
-                const targetCardIndex = newCards.findIndex(c => c.id === targetCardId);
-                
-                if (targetCardIndex !== -1) {
-                    // 移動先に別のカードがいる場合は追い出す
-                    const existingCardIndex = newCards.findIndex(c => c.currentSlotId === targetSlotId && c.id !== targetCardId);
-                    if (existingCardIndex !== -1) {
-                    newCards[existingCardIndex].currentSlotId = null;
+                setCards(prev => {
+                    const newCards = [...prev];
+                    const idx = newCards.findIndex(c => c.id === draggedCardId);
+                    if (dropZone) {
+                        const targetSlotId = dropZone.dataset.slotId;
+                        const targetSlot = slots.find(s => s.id === targetSlotId);
+                        const isCorrect = targetSlot && targetSlot.correctChar === newCards[idx].char;
+                        const isOccupied = newCards.some(c => c.currentSlotId === targetSlotId && c.id !== draggedCardId);
+                        
+                        // 正解かつ空いている場合のみ配置
+                        if (isCorrect && !isOccupied) {
+                            newCards[idx].currentSlotId = targetSlotId;
+                        } else {
+                            newCards[idx].currentSlotId = null;
+                        }
+                    } else {
+                        newCards[idx].currentSlotId = null;
                     }
-                    // 移動
-                    newCards[targetCardIndex].currentSlotId = targetSlotId;
-                }
-                }
-                return newCards;
-            });
+                    newCards[idx].isDragging = false;
+                    return newCards;
+                });
+                setDraggedCardId(null);
             };
 
-
-            // 判定ロジック & 正解保存
+            // 判定ロジック
             useEffect(() => {
+                if (gameState !== 'playing') return;
                 const newCompletedRows = { ...completedRows };
                 let soundTriggered = false;
                 let newlySolved = [];
 
-                // 現在のラウンドの問題数分チェック
-                for (let iIdx = 0; iIdx < currentIdioms.length; iIdx++) {
-                    if (completedRows[iIdx]) continue;
-
-                    const rowSlotIds = slots
-                    .filter(s => s.idiomIndex === iIdx)
-                    .map(s => s.id);
-                    
-                    const isRowComplete = rowSlotIds.every(slotId => 
-                    cards.some(c => c.currentSlotId === slotId)
-                    );
-
+                currentIdioms.forEach((idiom, iIdx) => {
+                    if (completedRows[iIdx]) return;
+                    const rowSlotIds = slots.filter(s => s.idiomIndex === iIdx).map(s => s.id);
+                    const isRowComplete = rowSlotIds.every(sid => cards.some(c => c.currentSlotId === sid));
                     if (isRowComplete) {
                         newCompletedRows[iIdx] = true;
                         soundTriggered = true;
-                        newlySolved.push(currentIdioms[iIdx].kanji);
+                        newlySolved.push(idiom.kanji);
                     }
-                }
+                });
 
                 if (soundTriggered) {
                     setCompletedRows(newCompletedRows);
                     playSoundEffect('correct');
-                    updateProgress(newlySolved); // 即時保存
+                    setSolvedIdioms(prev => {
+                        const next = [...prev];
+                        newlySolved.forEach(k => { if (!next.includes(k)) next.push(k); });
+                        return next;
+                    });
                 }
-            }, [cards, slots, completedRows, currentIdioms, updateProgress, playSoundEffect]);
+            }, [cards]);
 
-            // Global event listeners for drag
-            useEffect(() => {
-            if (draggedCardId) {
-                window.addEventListener('pointermove', handlePointerMove, { passive: false });
-                window.addEventListener('pointerup', handlePointerUp);
-                // Touch events fallback is removed as Pointer events are sufficient and cleaner
-                // But we keep preventDefault in handlePointerMove
-            }
-            return () => {
-                window.removeEventListener('pointermove', handlePointerMove);
-                window.removeEventListener('pointerup', handlePointerUp);
+            // 全問正解チェック
+            const isAllComplete = currentIdioms.length > 0 && Object.keys(completedRows).length === currentIdioms.length;
+
+            const handleRoundComplete = () => {
+                playSoundEffect('completion');
+                if (solvedIdioms.length >= IDIOM_DATABASE.length) setGameState('all_clear');
+                else startRandomRound();
             };
+
+            const handleHint = (idiomIndex) => {
+                setCards(prev => {
+                    const next = [...prev];
+                    const targetSlotId = `slot-${idiomIndex}-0`;
+                    const targetCard = next.find(c => c.id === `card-${idiomIndex}-0`);
+                    if(targetCard) {
+                        // 既にその場所にいるカードを追い出す
+                        const occupier = next.find(c => c.currentSlotId === targetSlotId && c.id !== targetCard.id);
+                        if(occupier) occupier.currentSlotId = null;
+                        targetCard.currentSlotId = targetSlotId;
+                    }
+                    return next;
+                });
+            };
+
+            const handleShowAnswer = (idiomIndex) => {
+                setCards(prev => {
+                    const next = [...prev];
+                    [0,1,2,3].forEach(cIdx => {
+                        const targetSlotId = `slot-${idiomIndex}-${cIdx}`;
+                        const targetCard = next.find(c => c.id === `card-${idiomIndex}-${cIdx}`);
+                        if(targetCard) {
+                             const occupier = next.find(c => c.currentSlotId === targetSlotId && c.id !== targetCard.id);
+                             if(occupier) occupier.currentSlotId = null;
+                             targetCard.currentSlotId = targetSlotId;
+                        }
+                    });
+                    return next;
+                });
+            };
+
+            // Global Pointer Events
+            useEffect(() => {
+                if (draggedCardId) {
+                    window.addEventListener('pointermove', handlePointerMove, { passive: false });
+                    window.addEventListener('pointerup', handlePointerUp);
+                }
+                return () => {
+                    window.removeEventListener('pointermove', handlePointerMove);
+                    window.removeEventListener('pointerup', handlePointerUp);
+                };
             }, [draggedCardId]);
 
 
-            const isAllComplete = currentIdioms.length > 0 && Object.keys(completedRows).length === currentIdioms.length;
-
-            // --- デザイン定数 (サイズ微調整) ---
-            // md:h-28 -> md:h-20 にして高さを減らす
-            // w-14 (3.5rem) -> w-16
-            // md:w-16 (4rem) -> md:w-24
-            // 高さは内容に合わせて h-full とする
-            const CARD_SIZE_CLASS = "w-16 h-20 md:w-24 md:h-28";
-
-            // --- Render Helpers ---
-
+            // --- レンダリング ---
             const renderCard = (card) => {
-            if (!card) return null;
-            
-            const style = card.isDragging ? {
-                position: 'fixed',
-                left: dragPosition.x,
-                top: dragPosition.y,
-                transform: 'translate(-50%, -50%)',
-                zIndex: 9999,
-                pointerEvents: 'none',
-                touchAction: 'none', 
-            } : {
-                position: 'relative',
-                width: '100%',
-                height: '100%',
-                touchAction: 'none',
+                if (!card) return null;
+                // スマホタッチ時の視認性向上: 指の少し上に表示 (-100% オフセット)
+                const style = card.isDragging ? {
+                    position: 'fixed', left: dragPosition.x, top: dragPosition.y,
+                    transform: 'translate(-50%, -100%)', zIndex: 9999, pointerEvents: 'none'
+                } : { position: 'relative', width: '100%', height: '100%' };
+                
+                return (
+                    <div
+                        key={card.id}
+                        onPointerDown={(e) => handlePointerDown(e, card.id)}
+                        className={`flex flex-col items-center justify-center rounded-xl select-none cursor-grab active:cursor-grabbing transition-transform duration-200 font-bold bg-white border-2 border-stone-800 ${card.isDragging ? 'shadow-xl opacity-90 scale-110 w-20 h-20 md:w-24 md:h-24' : 'w-full h-full hover:-translate-y-1 shadow-md'}`}
+                        style={style}
+                    >
+                        <div className="text-[10px] md:text-xs text-stone-500 mb-0.5">{card.charReading}</div>
+                        <div className="text-4xl md:text-6xl leading-none mb-1">{card.char}</div>
+                    </div>
+                );
             };
 
-            return (
-                <div
-                key={card.id}
-                onPointerDown={(e) => handlePointerDown(e, card.id)}
-                className={`
-                    flex flex-col items-center justify-center 
-                    rounded-xl select-none
-                    cursor-grab active:cursor-grabbing
-                    transition-transform duration-200
-                    font-bold
-                    ${card.isDragging ? 'shadow-xl opacity-90 scale-110' : 'hover:-translate-y-1 shadow-md'}
-                    
-                    bg-white border-2 border-stone-800
-                    ${!card.isDragging && card.currentSlotId ? 'bg-white' : ''}
-                    ${card.isDragging ? CARD_SIZE_CLASS : 'w-full h-full'}
-                `}
-                style={style}
-                >
-                {/* 読み仮名 (カード内上部) */}
-                <div className="text-[10px] md:text-xs text-stone-500 mb-0.5 md:mb-1">{card.charReading}</div>
-                {/* 漢字 (大きく) */}
-                <div className="text-3xl md:text-5xl leading-none mb-1">{card.char}</div>
-                </div>
-            );
-            };
-
-            // スタート画面
+            // スタート画面 (復元版)
             if (gameState === 'start') {
-            const progressPercent = Math.round((solvedIdioms.length / IDIOM_DATABASE.length) * 100);
-            
-            return (
-                <div className="h-full w-full bg-yellow-50 text-stone-800 flex items-center justify-center p-2 select-none overflow-hidden">
-                <div className="bg-white w-full max-w-md rounded-3xl shadow-xl overflow-hidden border-4 border-orange-200 flex flex-col h-full max-h-[90vh]">
-                    <div className="bg-orange-400 p-4 text-center relative overflow-hidden shrink-0">
-                    <div className="absolute top-0 left-0 w-full h-full opacity-20">
-                        {[...Array(10)].map((_, i) => (
-                            <Star key={i} className="absolute text-white" style={{
-                            top: `${Math.random()*100}%`, left: `${Math.random()*100}%`, 
-                            transform: `scale(${0.5 + Math.random()})`
-                            }} />
-                        ))}
-                    </div>
-                    <h1 className="text-2xl md:text-3xl font-bold text-white tracking-widest mb-1 drop-shadow-md relative z-10 whitespace-nowrap">四字熟語クイズ</h1>
-                    <div className="inline-block bg-white text-orange-500 font-bold text-xs md:text-sm px-3 py-0.5 rounded-full relative z-10 shadow-sm">
-                        全{IDIOM_DATABASE.length}問
-                    </div>
-                    </div>
-                    
-                    {/* スクロール可能エリア */}
-                    <div className="p-4 bg-white overflow-y-auto flex-1 flex flex-col">
-                    
-                        {/* 進捗表示エリア */}
-                        <div className="mb-4 bg-orange-50 p-3 rounded-xl border-2 border-orange-100 text-center shrink-0">
-                            <div className="text-stone-500 font-bold mb-0.5 text-xs">現在のクリア数</div>
-                            <div className="flex items-end justify-center gap-1 text-orange-600">
-                            <span className="text-2xl md:text-3xl font-bold">{solvedIdioms.length}</span>
-                            <span className="text-sm md:text-lg font-bold pb-1 text-orange-400">/ {IDIOM_DATABASE.length}</span>
-                            </div>
-                            <div className="w-full bg-orange-200 rounded-full h-2 mt-1">
-                            <div className="bg-orange-500 h-2 rounded-full transition-all duration-1000" style={{ width: `${progressPercent}%` }}></div>
-                            </div>
-                        </div>
-
-                        <h2 className="font-bold text-lg mb-2 flex items-center gap-2 text-orange-600 shrink-0">
-                            <HelpCircle className="w-5 h-5"/> あそびかた
-                        </h2>
-                        <div className="space-y-2 text-stone-600 text-sm md:text-base shrink-0">
-                            <div className="flex gap-2 items-start">
-                            <div className="w-6 h-6 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-bold shrink-0 text-xs">1</div>
-                            <p className="pt-0.5">左の「漢字カード」を指でつかんでね。</p>
-                            </div>
-                            <div className="flex gap-2 items-start">
-                            <div className="w-6 h-6 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-bold shrink-0 text-xs">2</div>
-                            <p className="pt-0.5">意味をヒントにして、右の四角にいれてね。</p>
-                            </div>
-                            <div className="flex gap-2 items-start">
-                            <div className="w-6 h-6 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-bold shrink-0 text-xs">3</div>
-                            <div className="pt-0.5">
-                                <p>わからないときはボタンを使おう！</p>
-                                <div className="flex flex-wrap gap-2 mt-1">
-                                    <div className="flex items-center gap-1">
-                                    <span className="bg-yellow-400 text-white p-0.5 px-1 rounded shadow-sm"><Lightbulb className="w-3 h-3" /></span>
-                                    <span className="text-xs">ヒント</span>
-                                    </div>
-                                    <div className="flex items-center gap-1">
-                                    <span className="bg-sky-400 text-white p-0.5 px-1 rounded shadow-sm"><Eye className="w-3 h-3" /></span>
-                                    <span className="text-xs">こたえ</span>
-                                    </div>
+                const progressPercent = Math.round((solvedIdioms.length / IDIOM_DATABASE.length) * 100);
+                
+                return (
+                    <div className="h-full w-full bg-yellow-50 text-stone-800 flex items-center justify-center p-2 select-none overflow-hidden">
+                        <div className="bg-white w-full max-w-md rounded-3xl shadow-xl overflow-hidden border-4 border-orange-200 flex flex-col h-full max-h-[90vh]">
+                            {/* ヘッダーエリア */}
+                            <div className="bg-orange-400 p-4 text-center relative overflow-hidden shrink-0">
+                                <div className="absolute top-0 left-0 w-full h-full opacity-20">
+                                    {[...Array(10)].map((_, i) => (
+                                        <Star key={i} className="absolute text-white" style={{
+                                        top: `${Math.random()*100}%`, left: `${Math.random()*100}%`, 
+                                        transform: `scale(${0.5 + Math.random()})`
+                                        }} />
+                                    ))}
+                                </div>
+                                <h1 className="text-2xl md:text-3xl font-bold text-white tracking-widest mb-1 drop-shadow-md relative z-10 whitespace-nowrap">四字熟語クイズ</h1>
+                                <div className="inline-block bg-white text-orange-500 font-bold text-xs md:text-sm px-3 py-0.5 rounded-full relative z-10 shadow-sm">
+                                    全{IDIOM_DATABASE.length}問
                                 </div>
                             </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    {/* フッター（ボタンエリア）を固定 */}
-                    <div className="p-4 bg-white border-t border-stone-100 shrink-0">
-                        <button 
-                            onClick={startRandomRound}
-                            className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold text-lg md:text-xl py-3 rounded-xl shadow-lg border-b-4 border-orange-700 active:border-b-0 active:translate-y-1 transition-all flex items-center justify-center gap-2"
-                        >
-                            <Sparkles className="w-5 h-5 md:w-6 md:h-6" /> 
-                            {solvedIdioms.length > 0 ? "つづきから" : "スタート！"}
-                        </button>
-                        {solvedIdioms.length > 0 && (
-                            <button onClick={resetProgress} className="mt-2 w-full text-stone-400 text-xs hover:text-red-500 flex items-center justify-center gap-1">
-                            <Trash2 className="w-3 h-3"/> きろくを消す
-                            </button>
-                        )}
-                    </div>
-
-                </div>
-                </div>
-            );
-            }
-
-            // リザルト画面
-            if (gameState === 'result') {
-            return (
-                <div className="min-h-screen bg-yellow-50 flex flex-col items-center justify-center p-4 select-none">
-                <div className="bg-white p-10 rounded-3xl shadow-xl max-w-md w-full text-center border-4 border-orange-200">
-                    <div className="mb-6 flex justify-center">
-                        <div className="w-24 h-24 bg-yellow-100 rounded-full flex items-center justify-center animate-bounce">
-                        <Check className="w-12 h-12 text-yellow-500" />
-                        </div>
-                    </div>
-                    <h2 className="text-3xl font-bold text-orange-600 mb-4">クリア！</h2>
-                    <p className="text-stone-600 mb-8 text-lg">
-                    あと {IDIOM_DATABASE.length - solvedIdioms.length} もん！
-                    </p>
-                    <button 
-                    onClick={handleNextRound}
-                    className="bg-green-500 hover:bg-green-600 text-white font-bold text-xl py-4 px-10 rounded-full shadow-lg border-b-4 border-green-700 active:border-b-0 active:translate-y-1 transition-all flex items-center justify-center gap-2 mx-auto animate-bounce"
-                    >
-                    つぎへ <ArrowRight className="w-6 h-6" />
-                    </button>
-                </div>
-                </div>
-            );
-            }
-
-            // 全問クリア画面
-            if (gameState === 'all_clear') {
-            return (
-                <div className="min-h-screen bg-yellow-50 flex flex-col items-center justify-center p-4 select-none">
-                <div className="bg-white p-10 rounded-3xl shadow-xl max-w-md w-full text-center border-4 border-orange-200 relative overflow-hidden">
-                    <div className="absolute inset-0 bg-yellow-100 opacity-20 pointer-events-none"></div>
-                    <div className="mb-6 flex justify-center">
-                        <div className="w-32 h-32 bg-yellow-200 rounded-full flex items-center justify-center animate-bounce">
-                        <Trophy className="w-16 h-16 text-yellow-600" />
-                        </div>
-                    </div>
-                    <h2 className="text-4xl font-bold text-orange-600 mb-4 drop-shadow-sm">全問クリア！</h2>
-                    <p className="text-stone-600 mb-8 text-xl font-bold">おめでとう！<br/>きみは四字熟語マスターだ！</p>
-                    
-                    <button 
-                    onClick={resetProgress}
-                    className="bg-sky-400 hover:bg-sky-500 text-white font-bold text-lg py-3 px-8 rounded-full flex items-center justify-center gap-2 mx-auto shadow-md transition active:scale-95"
-                    >
-                    <RotateCcw className="w-5 h-5" /> 最初からやりなおす
-                    </button>
-                </div>
-                </div>
-            );
-            }
-
-            // プレイ画面
-            return (
-            <div className="h-full w-full flex flex-col md:flex-row text-stone-800 overflow-hidden select-none bg-yellow-50" ref={containerRef}>
-                
-                {/* モーダル */}
-                {isSaveModalOpen && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-                        <div className="bg-white rounded-2xl p-6 shadow-2xl max-w-sm w-full border-4 border-orange-200 animate-bounce-in">
-                        <h3 className="text-xl font-bold text-orange-800 mb-4 text-center flex items-center justify-center gap-2">
-                            <Save className="w-6 h-6" /> データを保存しますか？
-                        </h3>
-                        <p className="text-stone-600 mb-6 text-center text-sm">
-                            これまでのクリア数を保存して、<br/>タイトル画面に戻ります。
-                        </p>
-                        <div className="flex gap-4 justify-center">
-                            <button 
-                            onClick={() => setIsSaveModalOpen(false)}
-                            className="flex-1 bg-stone-200 hover:bg-stone-300 text-stone-700 font-bold py-2 px-4 rounded-full"
-                            >
-                            キャンセル
-                            </button>
-                            <button 
-                            onClick={confirmSaveAndExit}
-                            className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-full shadow-md"
-                            >
-                            OK
-                            </button>
-                        </div>
-                        </div>
-                    </div>
-                )}
-
-                {/* LEFT: 漢字カード置き場 */}
-                <div className="flex-1 md:flex-none md:w-1/3 md:h-full bg-orange-100 border-b-4 md:border-b-0 md:border-r-4 border-orange-200 flex flex-col shadow-inner z-10 order-1 min-h-0 h-[35%] md:h-auto">
-                <div className="p-2 md:p-3 bg-orange-200 font-bold text-orange-800 flex justify-between items-center shadow-sm shrink-0">
-                    <span className="flex items-center gap-2"><Star className="w-5 h-5 fill-orange-500 text-orange-500"/> 漢字カード</span>
-                    <span className="text-sm bg-white px-3 py-1 rounded-full text-orange-600 font-bold shadow-sm">あと {cards.filter(c => !c.currentSlotId).length} まい</span>
-                </div>
-                
-                <div className="flex-1 p-2 md:p-4 overflow-y-auto min-h-0">
-                    {/* カードプール: Gridに変更。 h-full と place-content-center を追加して上下中央寄せ */}
-                    <div className="grid grid-cols-4 md:grid-cols-2 lg:grid-cols-3 gap-2 content-start">
-                    {cards.map(card => {
-                        const isPlaced = card.currentSlotId !== null;
-                        return (
-                        <div key={card.id} className={`${CARD_SIZE_CLASS} ${isPlaced ? 'invisible' : ''}`}>
-                            {renderCard(card)}
-                        </div>
-                        );
-                    })}
-                    </div>
-                </div>
-                </div>
-
-                {/* RIGHT: 回答エリア - 色合いをオレンジ系に変更 */}
-                <div className="flex-1 md:w-2/3 md:h-full flex flex-col bg-orange-50 order-2 min-h-0 h-[65%] md:h-auto">
-                {/* Header */}
-                <header className="bg-white shadow-sm px-4 py-1 flex justify-between items-center z-20 border-b-2 border-orange-200 shrink-0">
-                    <div className="flex items-center gap-3">
-                    <button 
-                        onClick={handleGoHome}
-                        className="bg-orange-100 hover:bg-orange-200 text-orange-700 px-3 py-1 rounded-full transition-colors flex items-center gap-1 text-sm font-bold"
-                        aria-label="タイトルに戻る"
-                    >
-                        <RotateCcw className="w-4 h-4" />
-                        <span>トップ</span>
-                    </button>
-                    <div className="text-orange-800 font-bold">
-                        のこり <span className="text-2xl text-orange-500 font-bold mx-1">{IDIOM_DATABASE.length - solvedIdioms.length}</span> もん
-                    </div>
-                    </div>
-                    
-                    {/* 「次へ」ボタンエリア */}
-                    <div className="h-10 flex items-center">
-                    {isAllComplete && (
-                        <button 
-                        onClick={handleRoundComplete}
-                        className="bg-green-500 hover:bg-green-600 text-white text-base font-bold py-1.5 px-4 rounded-full shadow-lg border-b-4 border-green-700 active:border-b-0 active:translate-y-1 transition-all flex items-center gap-1.5 animate-bounce"
-                        >
-                        つぎへ <ArrowRight className="w-4 h-4" />
-                        </button>
-                    )}
-                    </div>
-                </header>
-
-                {/* Question List Container with Border */}
-                <div className="flex-1 border-4 border-orange-300 rounded-none md:rounded-2xl md:m-2 bg-orange-100/50 overflow-hidden flex flex-col relative min-h-0">
-                    
-                    {/* 説明文 */}
-                    <div className="bg-orange-200 text-orange-800 text-center py-1 text-xs md:text-sm font-bold shrink-0">
-                    漢字カードをドラッグして、四字熟語を完成させよう
-                    </div>
-
-                    {/* スクロールエリア - justify-startに変更して上詰め配置 */}
-                    <div className="flex-1 overflow-y-scroll overflow-x-hidden no-scrollbar p-1 md:p-2 min-h-0">
-                    <div className="max-w-4xl mx-auto flex flex-col justify-start gap-1 md:gap-4 pb-2"> 
-                        {currentIdioms.map((idiom, iIdx) => (
-                        <div key={iIdx} className="bg-white p-1 md:p-1.5 rounded-xl shadow-sm border border-orange-200 relative shrink-0">
                             
-                            {/* 意味 */}
-                            <div className="mb-0.5 text-xs text-black bg-amber-100 rounded-lg px-2 py-0.5 border-l-4 border-amber-400 flex items-start">
-                                <span className="font-bold text-amber-700 mr-1 shrink-0 text-xs md:text-base">いみ：</span>
-                                <span className="leading-tight text-xs md:text-base">{parseMeaning(idiom.meaning)}</span>
-                            </div>
-
-                            <div className="flex items-center gap-1 md:gap-2 justify-center">
-                            {/* 回答枠エリア */}
-                            <div className="flex justify-between md:justify-start gap-1 md:gap-2 flex-1">
-                                {[0, 1, 2, 3].map(cIdx => {
-                                const slotId = `slot-${iIdx}-${cIdx}`;
-                                const cardInSlot = cards.find(c => c.currentSlotId === slotId);
-
-                                return (
-                                    <div 
-                                    key={slotId}
-                                    data-slot-id={slotId}
-                                    className={`
-                                        drop-zone relative rounded-xl flex items-center justify-center
-                                        transition-colors duration-200
-                                        ${CARD_SIZE_CLASS}
-                                        ${cardInSlot ? '' : 'bg-stone-100 border-2 border-dashed border-stone-300'}
-                                    `}
-                                    >
-                                    {!cardInSlot && (
-                                        <div className="w-2 h-2 bg-stone-300 rounded-full"></div>
-                                    )}
-                                    
-                                    {cardInSlot && renderCard(cardInSlot)}
+                            {/* スクロール可能エリア */}
+                            <div className="p-4 bg-white overflow-y-auto flex-1 flex flex-col">
+                                {/* 進捗表示エリア */}
+                                <div className="mb-4 bg-orange-50 p-3 rounded-xl border-2 border-orange-100 text-center shrink-0">
+                                    <div className="text-stone-500 font-bold mb-0.5 text-xs">現在のクリア数</div>
+                                    <div className="flex items-end justify-center gap-1 text-orange-600">
+                                        <span className="text-2xl md:text-3xl font-bold">{solvedIdioms.length}</span>
+                                        <span className="text-sm md:text-lg font-bold pb-1 text-orange-400">/ {IDIOM_DATABASE.length}</span>
                                     </div>
-                                );
-                                })}
-                            </div>
+                                    <div className="w-full bg-orange-200 rounded-full h-2 mt-1">
+                                        <div className="bg-orange-500 h-2 rounded-full transition-all duration-1000" style={{ width: `${progressPercent}%` }}></div>
+                                    </div>
+                                </div>
 
-                            {/* 正解判定マークエリア (右端) */}
-                            <div className={`${CARD_SIZE_CLASS} flex flex-col items-center justify-center shrink-0`}>
-                                {completedRows[iIdx] ? (
-                                <div className="relative">
-                                    <svg viewBox="0 0 100 100" className="w-12 h-12 md:w-16 md:h-16 text-rose-500 fill-none stroke-current stroke-[8] drop-shadow-md">
-                                    <circle cx="50" cy="50" r="40" />
-                                    <circle cx="50" cy="50" r="25" />
-                                    </svg>
+                                <h2 className="font-bold text-lg mb-2 flex items-center gap-2 text-orange-600 shrink-0">
+                                    <HelpCircle className="w-5 h-5"/> あそびかた
+                                </h2>
+                                <div className="space-y-2 text-stone-600 text-sm md:text-base shrink-0">
+                                    <div className="flex gap-2 items-start">
+                                        <div className="w-6 h-6 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-bold shrink-0 text-xs">1</div>
+                                        <p className="pt-0.5">左の「漢字カード」を指でつかんでね。</p>
+                                    </div>
+                                    <div className="flex gap-2 items-start">
+                                        <div className="w-6 h-6 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-bold shrink-0 text-xs">2</div>
+                                        <p className="pt-0.5">意味をヒントにして、右の四角にいれてね。</p>
+                                    </div>
+                                    <div className="flex gap-2 items-start">
+                                        <div className="w-6 h-6 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-bold shrink-0 text-xs">3</div>
+                                        <div className="pt-0.5">
+                                            <p>わからないときはボタンを使おう！</p>
+                                            <div className="flex flex-wrap gap-2 mt-1">
+                                                <div className="flex items-center gap-1">
+                                                    <span className="bg-yellow-400 text-white p-0.5 px-1 rounded shadow-sm"><Lightbulb className="w-3 h-3" /></span>
+                                                    <span className="text-xs">ヒント</span>
+                                                </div>
+                                                <div className="flex items-center gap-1">
+                                                    <span className="bg-sky-400 text-white p-0.5 px-1 rounded shadow-sm"><Eye className="w-3 h-3" /></span>
+                                                    <span className="text-xs">こたえ</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                ) : (
-                                // 未正解の場合、ヒント・答えボタンを表示
-                                <div className="flex flex-col gap-1 w-full h-full justify-center p-1">
-                                    <button 
-                                    onClick={() => handleHint(iIdx)}
-                                    className="bg-yellow-400 hover:bg-yellow-500 text-white rounded-lg flex items-center justify-center h-1/2 w-full shadow-sm active:translate-y-0.5 transition-all"
-                                    title="ヒント：最初の1文字を埋める"
-                                    >
-                                    <Lightbulb className="w-4 h-4 md:w-5 md:h-5" />
+                            </div>
+                            
+                            {/* フッターエリア */}
+                            <div className="p-4 bg-white border-t border-stone-100 shrink-0">
+                                <button 
+                                    onClick={startRandomRound}
+                                    className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold text-lg md:text-xl py-3 rounded-xl shadow-lg border-b-4 border-orange-700 active:border-b-0 active:translate-y-1 transition-all flex items-center justify-center gap-2"
+                                >
+                                    <Sparkles className="w-5 h-5 md:w-6 md:h-6" /> 
+                                    {solvedIdioms.length > 0 ? "つづきから" : "スタート！"}
+                                </button>
+                                {solvedIdioms.length > 0 && (
+                                    <button onClick={() => { if(confirm('本当にリセットしますか？')) { localStorage.removeItem(STORAGE_KEY); setSolvedIdioms([]); } }} className="mt-2 w-full text-stone-400 text-xs hover:text-red-500 flex items-center justify-center gap-1">
+                                        <Trash2 className="w-3 h-3"/> きろくを消す
                                     </button>
-                                    <button 
-                                    onClick={() => handleShowAnswer(iIdx)}
-                                    className="bg-sky-400 hover:bg-sky-500 text-white rounded-lg flex items-center justify-center h-1/2 w-full shadow-sm active:translate-y-0.5 transition-all"
-                                    title="答えを見る"
-                                    >
-                                    <Eye className="w-4 h-4 md:w-5 md:h-5" />
-                                    </button>
-                                </div>
                                 )}
                             </div>
-                            </div>
-
                         </div>
-                        ))}
                     </div>
-                    </div>
-                    
-                </div>
-                </div>
+                );
+            }
 
-                {/* Dragging Layer: ドラッグ中のカードを最前面に描画 */}
-                {cards.filter(c => c.isDragging).map(card => renderCard(card))}
-            </div>
+            if (gameState === 'all_clear') {
+                return (
+                    <div className="h-full w-full bg-yellow-50 flex items-center justify-center p-4">
+                        <div className="bg-white max-w-md w-full rounded-3xl shadow-xl border-4 border-orange-200 p-8 text-center animate-bounce-in">
+                            <Trophy className="w-20 h-20 text-yellow-500 mx-auto mb-4" />
+                            <h2 className="text-3xl font-bold text-orange-600 mb-4">全問クリア！</h2>
+                            <p className="text-stone-600 font-bold mb-8">おめでとう！<br/>きみは四字熟語マスターだ！</p>
+                            <button onClick={() => setGameState('start')} className="bg-sky-400 text-white font-bold py-3 px-8 rounded-full shadow-md">トップへ戻る</button>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="h-full w-full flex flex-col md:flex-row bg-yellow-50 overflow-hidden" ref={containerRef}>
+                    {/* カードプール (PC:左, SP:下) */}
+                    <div className="md:w-1/3 h-[30%] md:h-full bg-orange-100 border-t-4 md:border-t-0 md:border-r-4 border-orange-200 flex flex-col order-2 md:order-1 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] z-20">
+                        <div className="p-2 bg-orange-200 text-orange-800 font-bold flex justify-between items-center shadow-sm">
+                            <span className="flex items-center gap-2"><Star className="fill-orange-500 text-orange-500" size={18}/> 漢字カード</span>
+                            <span className="text-xs bg-white px-2 py-0.5 rounded-full text-orange-600">あと {cards.filter(c => !c.currentSlotId).length} 枚</span>
+                        </div>
+                        <div className="flex-1 p-2 overflow-y-auto">
+                            <div className="grid grid-cols-4 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                                {cards.map(card => {
+                                    const isPlaced = card.currentSlotId !== null;
+                                    return (
+                                        <div key={card.id} className={`aspect-square ${isPlaced ? 'invisible' : ''} w-full`}>
+                                            {renderCard(card)}
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* 問題エリア (PC:右, SP:上) */}
+                    <div className="flex-1 h-[70%] md:h-full flex flex-col bg-orange-50 order-1 md:order-2">
+                        <header className="bg-white shadow-sm px-4 py-2 flex justify-between items-center border-b-2 border-orange-100 z-10 shrink-0">
+                            <button onClick={() => setGameState('start')} className="text-orange-600 flex items-center gap-1 text-sm font-bold bg-orange-100 px-3 py-1 rounded-full"><Home size={16}/> トップ</button>
+                            <div className="text-orange-800 font-bold text-sm">のこり <span className="text-xl text-orange-500">{IDIOM_DATABASE.length - solvedIdioms.length}</span> 問</div>
+                            <div className="w-20 flex justify-end">
+                                {isAllComplete && (
+                                    <button onClick={handleRoundComplete} className="bg-green-500 text-white text-sm font-bold py-1 px-3 rounded-full shadow-md flex items-center gap-1 animate-bounce">
+                                        次へ <ArrowRight size={16}/>
+                                    </button>
+                                )}
+                            </div>
+                        </header>
+
+                        <div className="flex-1 overflow-y-auto p-2 md:p-4 space-y-4">
+                            {currentIdioms.map((idiom, iIdx) => (
+                                <div key={iIdx} className="bg-white p-2 rounded-xl shadow-sm border border-orange-200">
+                                    <div className="mb-2 text-sm md:text-base bg-amber-100 text-black font-bold px-3 py-2 rounded-lg border-l-4 border-amber-400 flex items-start gap-2">
+                                        <span className="shrink-0">意味:</span>
+                                        <span className="leading-relaxed">{parseMeaning(idiom.meaning)}</span>
+                                    </div>
+                                    
+                                    <div className="flex gap-2 items-center justify-start">
+                                        <div className="flex gap-1 md:gap-2">
+                                            {[0,1,2,3].map(cIdx => {
+                                                const slotId = `slot-${iIdx}-${cIdx}`;
+                                                const card = cards.find(c => c.currentSlotId === slotId);
+                                                return (
+                                                    <div key={slotId} data-slot-id={slotId} className={`drop-zone w-16 h-16 md:w-24 md:h-24 rounded-xl flex items-center justify-center transition-colors ${card ? '' : 'bg-stone-100 border-2 border-dashed border-stone-300'}`}>
+                                                        {!card && <div className="w-2 h-2 bg-stone-300 rounded-full"></div>}
+                                                        {card && renderCard(card)}
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                        
+                                        <div className="w-12 flex flex-col gap-1">
+                                            {completedRows[iIdx] ? (
+                                                <div className="text-rose-500 animate-bounce-in"><Circle size={40} strokeWidth={3}/></div>
+                                            ) : (
+                                                <>
+                                                    <button onClick={() => handleHint(iIdx)} className="bg-yellow-400 text-white p-1 rounded-lg shadow-sm flex justify-center"><Lightbulb size={16}/></button>
+                                                    <button onClick={() => handleShowAnswer(iIdx)} className="bg-sky-400 text-white p-1 rounded-lg shadow-sm flex justify-center"><Eye size={16}/></button>
+                                                </>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* ドラッグ中のカード描画レイヤー */}
+                    {cards.filter(c => c.isDragging).map(card => renderCard(card))}
+                </div>
             );
         }
 
-        const container = document.getElementById('root');
-        const root = createRoot(container);
+        const root = createRoot(document.getElementById('root'));
         root.render(<YojijukugoPuzzle />);
+    </script>
+
+    <!-- 手動トランスパイル実行用スクリプト -->
+    <script type="module">
+        const jsx = document.getElementById('app-source').innerHTML;
+        try {
+            const transformed = Babel.transform(jsx, { presets: ['react'] }).code;
+            const script = document.createElement('script');
+            script.type = 'module';
+            script.text = transformed;
+            document.body.appendChild(script);
+        } catch (e) {
+            console.error("Transpile Failed:", e);
+        }
     </script>
 </body>
 </html>
