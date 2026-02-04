@@ -94,8 +94,11 @@
         /* スマホ向けのルビ調整 */
         @media (max-width: 768px) {
             rt {
-                line-height: 0.9; /* 少し詰める */
-                font-size: 0.5em; 
+                line-height: 1; 
+                font-size: 0.5em;
+                /* 少し無理やり下げることで間隔を詰める */
+                transform: translateY(2px);
+                display: inline-block; /* transformを効かせるため */
             }
         }
         
@@ -551,8 +554,8 @@
                         `}
                         style={style}
                     >
-                        {/* スマホ時のみマイナスマージンで近づける */}
-                        <div className="text-[10px] md:text-xs text-stone-500 -mb-1 md:mb-0">{card.charReading}</div>
+                        {/* スマホ時のみマイナスマージンで近づける -mb-3, leading-noneを追加 */}
+                        <div className="text-[10px] md:text-xs text-stone-500 -mb-3 md:mb-0 leading-none">{card.charReading}</div>
                         <div className="text-4xl md:text-6xl leading-none">{card.char}</div>
                     </div>
                 );
